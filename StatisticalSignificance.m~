@@ -1,0 +1,30 @@
+close all;
+clear all;
+clc;
+
+load('dataset_ERP.mat');
+
+%Class A: label '1'
+%Class B: label '0'
+
+x = features(find(labels == 1), :); %vector of class A
+y = features(find(labels == 0), :); %vector of class B
+
+
+for k=300:4e00
+    figure('color','w');
+    histogram(x(:,k));
+    hold on
+    histogram(y(:,k));
+    hold off
+end
+
+
+%Confidence Interval
+%boxplot(features(:,301),'Notch','on');
+
+
+%t-test
+
+% 
+% [h,p]=ttest2(x,y);
