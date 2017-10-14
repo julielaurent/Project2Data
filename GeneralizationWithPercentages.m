@@ -4,13 +4,19 @@ clc;
 
 load('dataset_ERP.mat');
 ratioOrigin = 516/136;
+iPercentage = 0;
+errorClassification362Train = zeros(9,1);
+errorClass362Train = zeros(9,1);
+errorClassification362Test = zeros(9,1);
+errorClass362Test = zeros(9,1);
 
-for trainingPercentage = 10:5:90;
+for trainingPercentage = 10:10:90
+    iPercentage = iPercentage + 1;
     %% Split Dataset
-    trainSet1 = features(round(1:10/100*648),:);
+    trainSet1 = features(1:round(10/100*648),:);
     testSet2 = features(round(10/100*648)+1:648,:);
-    labelsTrain = labels(1:round(1:10/100*648));
-    labelsTest = labels(round(1:10/100*648)+1:648);
+    labelsTrain = labels(1:round(10/100*648));
+    labelsTest = labels(round(10/100*648)+1:648);
 
     %% Calculate sizes
     
@@ -51,7 +57,6 @@ for trainingPercentage = 10:5:90;
         for i = 1:sizeTrain(1)
             if (labelsTrain(i) == labelf362(i))
                 nCorrect362 = nCorrect362 + 1;
-
             else
                 if (labelsTrain(i) == 1)
                     misClassA = misClassA + 1;
@@ -76,15 +81,15 @@ for trainingPercentage = 10:5:90;
     optimalTH1 = th(find(errorClassification362 == min(errorClassification362)));
     optimalTH2 = th(find(errorClass362 == min(errorClass362)));
 
-    errorClassification362Train = min(errorClassification362);
-    errorClass362Train = min(errorClass362);
+    errorClassification362Train(iPercentage) = min(errorClassification362);
+    errorClass362Train(iPercentage) = min(errorClass362);
 
     % Scatter
     % We keep feature 362
     figure('Color','w');
-    scatter(x1(:,362),x1(:,366),'.b');
+    scatter(trainClassA(:,362),trainClassA(:,366),'.b');
     hold on;
-    scatter(y1(:,362),y1(:,366),'.r');
+    scatter(trainClassB(:,362),trainClassB(:,366),'.r');
     xlabel('Feature 362'); ylabel('Feature 366');
     hold on;
     vline(optimalTH1,'k--');
@@ -117,8 +122,8 @@ for trainingPercentage = 10:5:90;
         end
     end
 
-    errorClassification362Test = 1 - nCorrect362/(sizeTest(1));
-    errorClass362Test = 0.5*misClassA/sizeTestClassA(1) + 0.5*misClassB/sizeTestClassB(1);
+    errorClassification362Test(iPercentage) = 1 - nCorrect362/(sizeTest(1));
+    errorClass362Test(iPercentage) = 0.5*misClassA/sizeTestClassA(1) + 0.5*misClassB/sizeTestClassB(1);
 
     figure('Color','w');
     th = -6:0.09:6;
@@ -130,9 +135,9 @@ for trainingPercentage = 10:5:90;
     % Scatter
     % We keep feature 362
     figure('Color','w');
-    scatter(x1(:,362),x1(:,366),'.b');
+    scatter(testClassA(:,362),testClassA(:,366),'.b');
     hold on;
-    scatter(y1(:,362),y1(:,366),'.r');
+    scatter(testClassB(:,362),testClassB(:,366),'.r');
     xlabel('Feature 362'); ylabel('Feature 366');
     hold on;
     vline(optimalTH1,'k--');
@@ -142,7 +147,7 @@ for trainingPercentage = 10:5:90;
     hold off;
 end
 
-trainingPercentage = 10:5:90;
+trainingPercentage = 10:10:90;
 figure('Color','w');
 
 plot(trainingPercentage, errorClassification362Train, trainingPercentage, errorClass362Train, trainingPercentage, errorClassification362Test, trainingPercentage, errorClass362Test);
