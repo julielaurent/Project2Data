@@ -26,13 +26,13 @@ figure('Color','w');
 % hold off;
 
 %% Scatter
-figure('Color','w');
-tf362 = min;
-tf378 = ;
-scatter(features(:,362),features(:,378),'.');
-hold on;
-%ine(tf362);
-hold off;
+% figure('Color','w');
+% tf362 = min;
+% tf378 = ;
+% scatter(features(:,362),features(:,378),'.');
+% hold on;
+% %ine(tf362);
+% hold off;
 
 %% Classification
 sf362 = features(:,362);
