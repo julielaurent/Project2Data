@@ -47,7 +47,7 @@ y = features(find(labels == 0), :); %vector of class B
 % xticklabels({'Erroneous Cursor Movement','Correct Cursor Movement'});
 % box off;
 % figure('Color','w');
-% boxplot(features(:,378),labels);
+% boxplot(features(:,366),labels);
 % xticklabels({'Erroneous Cursor Movement','Correct Cursor Movement'});
 % box off;
 % % 
@@ -71,7 +71,7 @@ boxplot(features(:,362),labels,'Notch','on');
 xticklabels({'Erroneous Cursor Movement','Correct Cursor Movement'});
 box off;
 figure('Color','w');
-boxplot(features(:,378),labels,'Notch','on');
+boxplot(features(:,366),labels,'Notch','on');
 xticklabels({'Erroneous Cursor Movement','Correct Cursor Movement'});
 box off;
 
@@ -88,7 +88,7 @@ box off;
 % Good features = different for each class
 % h = 0 -> null hypothesis not rejected -> come from same distribution
 [hGood1,pGood1] = ttest2(x(:,362),y(:,362));
-[hGood2,pGood2] = ttest2(x(:,378),y(:,378));
+[hGood2,pGood2] = ttest2(x(:,366),y(:,366));
 % For both examples, the null hypothesis is rejected at level of alpha
 % p < 0.05 (negative exposents) -> classes significantly different for those
 % features
