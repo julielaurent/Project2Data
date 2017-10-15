@@ -50,7 +50,8 @@ y = features(find(labels == 0), :); %vector of class B
 % boxplot(features(:,366),labels);
 % xticklabels({'Erroneous Cursor Movement','Correct Cursor Movement'});
 % box off;
-% % 
+
+
 %% Boxplots with Notch
 
 % Bad features
@@ -105,3 +106,12 @@ box off;
 % because the more population you test, the more chance you have to get a
 % positive. If features are normally distributed, we could use the
 % Bonferroni correction for multiple testing.
+
+% To find the "best" feature
+alpha = 0.05;
+for i=1:2400  
+    [hGood(i),pGood(i)] = ttest2(x(:, i),y(:, i), 'Vartype','unequal'); % specify that our variances are not equal
+    [corrected_p(i), h(i)] = bonf_holm(pGood(i),alpha); % Bonferonni correction
+end
+
+BestDiscrFeat = find(corrected_p == min(corrected_p))

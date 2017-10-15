@@ -9,9 +9,8 @@ load('dataset_ERP.mat');
 x = features(find(labels == 1), :); %vector of class A
 y = features(find(labels == 0), :); %vector of class B
 
-%% Threshold choice with histograms ???
+%% Threshold choice with histograms 
 % % We take good features : 362, 366
-% % Histograms can help us find the TH how ?????
 figure('Color','w');
 histogram(x(:,362));
 hold on;
