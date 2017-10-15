@@ -110,8 +110,14 @@ box off;
 % To find the "best" feature
 alpha = 0.05;
 for i=1:2400  
-    [hGood(i),pGood(i)] = ttest2(x(:, i),y(:, i), 'Vartype','unequal'); % specify that our variances are not equal
-    [corrected_p(i), h(i)] = bonf_holm(pGood(i),alpha); % Bonferonni correction
+    hX = lillietest(x(:,i));
+    hY = lillietest(y(:,i));
+    if (hX == 0 && hY == 0)
+        [hGood(i),pGood(i)] = ttest2(x(:, i),y(:, i), 'Vartype','unequal'); % specify that our variances are not equal
+        [corrected_p(i), h(i)] = bonf_holm(pGood(i),alpha); % Bonferonni correction
+    else % à rajouter parce que sinon ça se met à 0 et c'est ces valeurs là les minimales
+        corrected_p(i) = 1;
+    end
 end
 
 BestDiscrFeat = find(corrected_p == min(corrected_p))
