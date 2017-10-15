@@ -7,11 +7,12 @@ BestFeature = 681;
 OtherFeature = 531;
 ratioOrigin = 516/136;
 iPercentage = 0;
-errorClassificationTrain = zeros(17,1);
-errorClassTrain = zeros(17,1);
-errorClassificationTest = zeros(17,1);
-errorClassTest = zeros(17,1);
-ratioDifference = zeros(17,1);
+errorClassificationTrain = zeros(134,1);
+errorClassTrain = zeros(134,1);
+errorClassificationTest = zeros(134,1);
+errorClassTest = zeros(134,1);
+ratioTrain = zeros(134,1);
+ratioTest = zeros(134,1);
 
 for trainingPercentage = 10:5:90
     iPercentage = iPercentage + 1;
@@ -32,18 +33,18 @@ for trainingPercentage = 10:5:90
     trainClassB = trainSet1(find(labelsTrain == 0), :); %vector of class B
     sizeTrainClassA = size(trainClassA);
     sizeTrainClassB = size(trainClassB);
-    ratioTrain = sizeTrainClassA(1)/sizeTrainClassB(1);
+    ratioTrain(iPercentage) = sizeTrainClassA(1)/sizeTrainClassB(1);
 
     testClassA = testSet2(find(labelsTest == 1), :); %vector of class A
     testClassB = testSet2(find(labelsTest == 0), :); %vector of class B
     sizeTestClassA = size(testClassA);
     sizeTestClassB = size(testClassB);
-    ratioTest = sizeTestClassA(1)/sizeTestClassB(1);
+    ratioTest(iPercentage) = sizeTestClassA(1)/sizeTestClassB(1);
     
-    % Caluculate ratio difference
-    ratioDifference(iPercentage) = abs(ratioOrigin - ratioTrain) + abs((ratioOrigin - ratioTest));
-    
+    %Calucula
+
     %% Classification and optimal TH with TRAINING set
+
     errorClassification = zeros(134,1);
     errorClass = zeros(134,1);
 
@@ -144,7 +145,7 @@ for trainingPercentage = 10:5:90
     figure('Color','w');
     title(['Scatter plot with Testing Set (training : ' num2str(trainingPercentage) ' %)'])
     hold on;
-    scatter(testClassA(:,BestFeature),testClassA(:,OtherFeature),'.b');
+    scatter(testClassA(:,BeatFeature),testClassA(:,OtherFeature),'.b');
     hold on;
     scatter(testClassB(:,BestFeature),testClassB(:,OtherFeature),'.r');
     xlabel(['Feature ' num2str(BestFeature)]); ylabel(['Feature ' num2str(OtherFeature)]);
@@ -172,6 +173,10 @@ box off;
 hold off;
 
 %% Find ratio closest to original ratio
-percentage = 10:5:90;
+ratioDifference = zeros(17,1);
+for i = 1:17
+    ratioDifference(i) = asb((ratioOriginal - ratioTrain) + (ratioOriginal - ratioTest));
+end
+
 idx = find(ratioDifference == min(ratioDifference));
-optimalTrainingPercentage = percentage(idx);
+optimalTrainingPercentage = 

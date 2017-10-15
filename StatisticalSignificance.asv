@@ -120,10 +120,7 @@ end
 % to avoid that values are equal to 0 : they would thus be minimals
 zeroToReplaceIdx = find(corrected_p == 0);
 corrected_p(zeroToReplaceIdx) = 1;
+corrected_pSorted = sort(corrected_p);
+SecondBestPvalue = corrected
 
 BestDiscrFeat = find(corrected_p == min(corrected_p))
-
-% 4th best pvalue because further away from 681
-corrected_pSorted = sort(corrected_p);
-SecondBestPvalue = corrected_pSorted(4);
-SecondBestDisctFeat = find(corrected_p == SecondBestPvalue)

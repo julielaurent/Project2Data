@@ -17,7 +17,7 @@ hold on;
 histogram(x(:,681));
 hold on;
 histogram(y(:,681));
-legend('Class A : correct movement of cursor','Class B : erroneous movement of cursor');
+legend('Class A : correct movement of Cursor','Class B : Erroneous Movement of Cursor');
 box off;
 hold off;
 
@@ -27,7 +27,7 @@ hold on;
 histogram(x(:,531));
 hold on;
 histogram(y(:,531));
-legend('Class A : correct movement of cursor','Class B : erroneous movement of cursor');
+legend('Class A : correct movement of Cursor','Class B : Erroneous Movement of Cursor');
 box off;
 hold off;
 
@@ -44,7 +44,7 @@ for tf681 = -6:0.09:6
     misClassB = 0;
     it = it + 1;
     
-    labelf681 = (sf681 < tf681); % element is 1 if Class A
+    labelf681 = (sf681 > tf681); % element is 1 if Class A
     
     for i = 1:648
         if (labels(i) == labelf681(i))
@@ -82,10 +82,10 @@ hold on;
 scatter(y(:,681),y(:,531),'.r');
 xlabel('Feature 681'); ylabel('Feature 531');
 hold on;
-line([optimalTH1 optimalTH1],[-8 8],'Color','k','LineStyle',':');
+vline(optimalTH1,'k--');
 hold on;
-line([optimalTH2 optimalTH2],[-8 8],'Color','k','LineStyle','--');
-legend('Samples from Class A (correct)','Samples from Class B (erroneous)','Threshold with minimal classification error','Threshold with minimal class error','Location','best');
+vline(optimalTH2,'k-.');
+legend('Samples from Class A (correct)','Samples from Class B (erroneous)');
 hold off;
 
 %% Scale to two features
@@ -104,7 +104,7 @@ for tf = -6:0.1:6
     misClassB = 0;
     it = it + 1;
     
-    labelf = (sf < tf); % element is 1 if Class A
+    labelf = (sf > tf); % element is 1 if Class A
     
     for i = 1:2*648
         if (labelsDouble(i) == labelf(i))
@@ -135,13 +135,13 @@ optimalTH1Double = th(find(errorClassification == min(errorClassification)));
 optimalTH2Double = th(find(errorClass == min(errorClass)));
 
 figure('Color','w');
-scatter(x(:,681),x(:,531),'.b');
+scatter(x(:,681),x(:,5),'.b');
 hold on;
-scatter(y(:,681),y(:,531),'.r');
-xlabel('Feature 681'); ylabel('Feature 531');
+scatter(y(:,681),y(:,366),'.r');
+xlabel('Feature 681'); ylabel('Feature 366');
 hold on;
-line([optimalTH1 optimalTH1],[-8 8],'Color','k','LineStyle',':');
+vline(optimalTH1Double,'k--');
 hold on;
-line([optimalTH2 optimalTH2],[-8 8],'Color','k','LineStyle','--');
-legend('Samples from Class A (correct)','Samples from Class B (erroneous)','Threshold with minimal classification error','Threshold with minimal class error','Location','best');
+vline(optimalTH2Double,'k-.');
+legend('Samples from Class A','Samples from Class B');
 hold off;
