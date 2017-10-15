@@ -10,13 +10,13 @@ errorClass362Train = zeros(9,1);
 errorClassification362Test = zeros(9,1);
 errorClass362Test = zeros(9,1);
 
-for trainingPercentage = 10:10:90
+for trainingPercentage = 10:5:90
     iPercentage = iPercentage + 1;
     %% Split Dataset
-    trainSet1 = features(1:round(10/100*648),:);
-    testSet2 = features(round(10/100*648)+1:648,:);
-    labelsTrain = labels(1:round(10/100*648));
-    labelsTest = labels(round(10/100*648)+1:648);
+    trainSet1 = features(1:round(trainingPercentage/100*648),:);
+    testSet2 = features(round(trainingPercentage/100*648)+1:648,:);
+    labelsTrain = labels(1:round(trainingPercentage/100*648));
+    labelsTest = labels(round(trainingPercentage/100*648)+1:648);
 
     %% Calculate sizes
     
@@ -73,13 +73,20 @@ for trainingPercentage = 10:10:90
 
     figure('Color','w');
     th = -6:0.09:6;
-    plot(th,errorClassification362, th, errorClass362);
+    plot(th,errorClassification362,'r-');
+    hold on;
+    plot(th, errorClass362,'b-');
+    hold on;
+    title(['Error in comparison with chosen threshold (training : ' num2str(trainingPercentage) ' %)'])
+    hold on;
     xlabel('Threshold'); ylabel('Error');
-    legend('Classification Error','Class Error');
+    legend('Classification Error','Class Error','Location','northwest');
     box off;
+    hold off;
 
-    optimalTH1 = th(find(errorClassification362 == min(errorClassification362)));
-    optimalTH2 = th(find(errorClass362 == min(errorClass362)));
+    % Cohérence de prendre la mean juste pour avoir une valeur ???
+    optimalTH1 = mean(th(find(errorClassification362 == min(errorClassification362))));
+    optimalTH2 = mean(th(find(errorClass362 == min(errorClass362))));
 
     errorClassification362Train(iPercentage) = min(errorClassification362);
     errorClass362Train(iPercentage) = min(errorClass362);
@@ -87,15 +94,17 @@ for trainingPercentage = 10:10:90
     % Scatter
     % We keep feature 362
     figure('Color','w');
+    title(['Scatter plot with Training Set (training : ' num2str(trainingPercentage) ' %)'])
+    hold on;
     scatter(trainClassA(:,362),trainClassA(:,366),'.b');
     hold on;
     scatter(trainClassB(:,362),trainClassB(:,366),'.r');
     xlabel('Feature 362'); ylabel('Feature 366');
     hold on;
-    vline(optimalTH1,'k--');
+    line([optimalTH1 optimalTH1],[-8 8],'Color','k','LineStyle',':');
     hold on;
-    vline(optimalTH2,'k-.');
-    legend('Samples from Class A (correct)','Samples from Class B (erroneous)');
+    line([optimalTH2 optimalTH2],[-8 8],'Color','k','LineStyle','--');
+    legend('Samples from Class A (correct)','Samples from Class B (erroneous)','Threshold with minimal classification error','Threshold with minimal class error','Location','best');
     hold off;
 
     %% Classification of TESTING set with found TH
@@ -125,32 +134,34 @@ for trainingPercentage = 10:10:90
     errorClassification362Test(iPercentage) = 1 - nCorrect362/(sizeTest(1));
     errorClass362Test(iPercentage) = 0.5*misClassA/sizeTestClassA(1) + 0.5*misClassB/sizeTestClassB(1);
 
-    figure('Color','w');
-    th = -6:0.09:6;
-    plot(th,errorClassification362, th, errorClass362);
-    xlabel('Threshold'); ylabel('Error');
-    legend('Classification Error','Class Error');
-    box off;
-
     % Scatter
     % We keep feature 362
     figure('Color','w');
+    title(['Scatter plot with Testing Set (training : ' num2str(trainingPercentage) ' %)'])
+    hold on;
     scatter(testClassA(:,362),testClassA(:,366),'.b');
     hold on;
     scatter(testClassB(:,362),testClassB(:,366),'.r');
     xlabel('Feature 362'); ylabel('Feature 366');
     hold on;
-    vline(optimalTH1,'k--');
+    line([optimalTH1 optimalTH1],[-8 8],'Color','k','LineStyle',':');
     hold on;
-    vline(optimalTH2,'k-.');
-    legend('Samples from Class A (correct)','Samples from Class B (erroneous)');
+    line([optimalTH2 optimalTH2],[-8 8],'Color','k','LineStyle','--');
+    legend('Samples from Class A (correct)','Samples from Class B (erroneous)','Threshold with minimal classification error','Threshold with minimal class error','Location','best');
     hold off;
 end
 
-trainingPercentage = 10:10:90;
+trainingPercentage = 10:5:90;
 figure('Color','w');
 
-plot(trainingPercentage, errorClassification362Train, trainingPercentage, errorClass362Train, trainingPercentage, errorClassification362Test, trainingPercentage, errorClass362Test);
+plot(trainingPercentage, errorClassification362Train,'r--');
+hold on;
+plot(trainingPercentage, errorClass362Train,'b--');
+hold on;
+plot(trainingPercentage, errorClassification362Test,'r-');
+hold on;
+plot(trainingPercentage, errorClass362Test,'b-');
 xlabel('Training Percentage of Dataset [%]'); ylabel('Error');
-legend('Training Classification Error','Training Class Error','Testing Classification Error','Testing Class Error');
+legend('Training Classification Error','Training Class Error','Testing Classification Error','Testing Class Error','Location','northwest');
 box off;
+hold off;
