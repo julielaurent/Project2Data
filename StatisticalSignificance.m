@@ -27,54 +27,104 @@ y = features(find(labels == 0), :); %vector of class B
 % Examples of very different feature distribution for each class : 345, 346,
 % 359,360, 362, 366, 367, 368, 369, 378
 
+figure('Color','w');
+subplot(1,2,1)
+histogram(x(:,681));
+hold on
+histogram(y(:,681));
+box off;
+legend('Correct Cursor Movement','Erroneous Cursor Movement');
+title('Histogram of feature 681')
+hold off;
+subplot(1,2,2)
+histogram(x(:,302));
+hold on
+histogram(y(:,302));
+box off;
+title('Histogram of feature 302')
+hold off;
+
 %% Boxplots
 
-% % % Bad features
-% % % Similar feature distribution for Class A and B
+% % Bad features
+% % Similar feature distribution for Class A and B
 % figure('Color','w');
 % boxplot(features(:,302),labels);
 % xticklabels({'Erroneous Cursor Movement','Correct Cursor Movement'});
 % box off;
+% title('Boxplot of feature 302')
 % figure('Color','w');
 % boxplot(features(:,303),labels);
 % xticklabels({'Erroneous Cursor Movement','Correct Cursor Movement'});
 % box off;
-% % 
-% % % Good features
-% % % Different feature distribution for Class A and B
+% title('Boxplot of feature 303')
+% 
+% % Good features
+% % Different feature distribution for Class A and B
 % figure('Color','w');
-% boxplot(features(:,362),labels);
+% boxplot(features(:,681),labels);
 % xticklabels({'Erroneous Cursor Movement','Correct Cursor Movement'});
 % box off;
-% figure('Color','w');
-% boxplot(features(:,366),labels);
+% title('Boxplot of feature 681')
+%figure('Color','w');
+% boxplot(features(:,531),labels);
 % xticklabels({'Erroneous Cursor Movement','Correct Cursor Movement'});
 % box off;
+% title('Boxplot of feature 531')
+
+
+figure('Color','w');
+subplot(1,2,1)
+boxplot(features(:,681),labels);
+xticklabels({'Erroneous','Correct'});
+box off;
+title('Boxplot of feature 681')
+subplot(1,2,2)
+boxplot(features(:,302),labels);
+xticklabels({'Erroneous','Correct'});
+box off;
+title('Boxplot of feature 302')
 
 
 %% Boxplots with Notch
 
 % Bad features
 % Similar feature distribution for Class A and B
-figure('Color','w');
-boxplot(features(:,302),labels,'Notch','on');
-xticklabels({'Erroneous Cursor Movement','Correct Cursor Movement'});
-box off;
-figure('Color','w');
-boxplot(features(:,303),labels,'Notch','on');
-xticklabels({'Erroneous Cursor Movement','Correct Cursor Movement'});
-box off;
+% figure('Color','w');
+% boxplot(features(:,302),labels,'Notch','on');
+% xticklabels({'Erroneous Cursor Movement','Correct Cursor Movement'});
+% box off;
+% title('Notch boxplot of feature 302')
+% figure('Color','w');
+% boxplot(features(:,303),labels,'Notch','on');
+% xticklabels({'Erroneous Cursor Movement','Correct Cursor Movement'});
+% box off;
+% title('Notch boxplot of feature 303')
 
 % Good features
 % Different feature distribution for Class A and B
+% figure('Color','w');
+% boxplot(features(:,681),labels,'Notch','on');
+% xticklabels({'Erroneous Cursor Movement','Correct Cursor Movement'});
+% title('Notch boxplot of feature 681')
+% box off;
+% figure('Color','w');
+% boxplot(features(:,531),labels,'Notch','on');
+% xticklabels({'Erroneous Cursor Movement','Correct Cursor Movement'});
+% box off;
+% title('Notch boxplot of feature 531')
+
 figure('Color','w');
-boxplot(features(:,362),labels,'Notch','on');
-xticklabels({'Erroneous Cursor Movement','Correct Cursor Movement'});
+subplot(1,2,1)
+boxplot(features(:,681),labels,'Notch','on');
+xticklabels({'Erroneous','Correct'});
+title('Notch boxplot of feature 681')
 box off;
-figure('Color','w');
-boxplot(features(:,366),labels,'Notch','on');
-xticklabels({'Erroneous Cursor Movement','Correct Cursor Movement'});
+subplot(1,2,2)
+boxplot(features(:,302),labels,'Notch','on');
+xticklabels({'Erroneous','Correct'});
 box off;
+title('Notch boxplot of feature 302')
 
 %% T-tests
 
@@ -88,8 +138,8 @@ box off;
 
 % Good features = different for each class
 % h = 0 -> null hypothesis not rejected -> come from same distribution
-[hGood1,pGood1] = ttest2(x(:,362),y(:,362));
-[hGood2,pGood2] = ttest2(x(:,366),y(:,366));
+[hGood1,pGood1] = ttest2(x(:,681),y(:,681));
+[hGood2,pGood2] = ttest2(x(:,531),y(:,531));
 % For both examples, the null hypothesis is rejected at level of alpha
 % p < 0.05 (negative exposents) -> classes significantly different for those
 % features
@@ -123,7 +173,7 @@ corrected_p(zeroToReplaceIdx) = 1;
 
 BestDiscrFeat = find(corrected_p == min(corrected_p))
 
-% 4th best pvalue because further away from 681
+% 4th best pvalue because further away from 681 -> 531
 corrected_pSorted = sort(corrected_p);
 SecondBestPvalue = corrected_pSorted(4);
 SecondBestDisctFeat = find(corrected_p == SecondBestPvalue)
