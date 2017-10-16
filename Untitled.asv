@@ -7,10 +7,10 @@ BestFeature = 681;
 OtherFeature = 531;
 %ratioOrigin = 516/136;
 iPercentage = 0;
-errorClassTrain = zeros(17,1);
-errorClassTest = zeros(17,1);
+errorClassTrain = zeros(9,1);
+errorClassTest = zeros(9,1);
 
-for trainingPercentage = 10:5:90
+for trainingPercentage = 10:10:90
     iPercentage = iPercentage + 1;
     %% Randomize and Split Dataset
     randFeatures = randperm(648);
@@ -36,11 +36,29 @@ for trainingPercentage = 10:5:90
     sizeTestClassA = size(testClassA);
     sizeTestClassB = size(testClassB);
     
+    labelsOutputTrain = zeros(sizeTrain(1),1);
+    labelsOutputTest = zeros(sizeTest(1),1);
+    
     %% Classification and optimal TH with TRAINING set
   
-    labelOutputTrain = (sf < tf); % element is 1 if Class A
-    errorClassTrain(iPercentage) = classerror(labelsTrain, labelOutputTrain);
+    
+    sfTrain = trainSet1(:,BestFeature);
+    errorClass = zeros(121,1);
+    it = 0;
+    labelsOutputTrain = 0;
+    
+    for tf = -6:0.1:6
+    
+        it = it + 1;
 
+        labelsOutputTrain = (sfTrain < tf); % element is 1 if Class A
+        errorClass(it) = classerrorOriginal(labelsTrain, labelsOutputTrain);
+     
+    end
+    
+    tf = -6:0.1:6;
+    optimalTH = mean(tf(find(errorClass == min(errorClass))));
+    errorClassTrain(iPercentage) = min(errorClass);
     % Scatter
     % We keep best feature
 %     figure('Color','w');
@@ -56,9 +74,9 @@ for trainingPercentage = 10:5:90
 %     hold off;
 
     %% Classification of TESTING set with found TH
-
-    labelfTest = (sf < optimalTH2); % element is 1 if Class A
-    errorClassTest(iPercentage) = classerror(labelsTest, labelfTest);
+    sfTest = testSet2(:,BestFeature);
+    labelsOutputTest = (sfTest < optimalTH); % element is 1 if Class A
+    errorClassTest(iPercentage) = classerrorOriginal(labelsTest, labelsOutputTest);
     % Scatter
 %     % We keep best feature
 %     figure('Color','w');
@@ -74,7 +92,7 @@ for trainingPercentage = 10:5:90
 %     hold off;
 end
 
-trainingPercentage = 10:5:90;
+trainingPercentage = 10:10:90;
 figure('Color','w');
 
 plot(trainingPercentage, errorClassTrain,'b--');

@@ -16,10 +16,11 @@ ratioDifference = zeros(17,1);
 for trainingPercentage = 10:5:90
     iPercentage = iPercentage + 1;
     %% Split Dataset
-    trainSet1 = features(1:round(trainingPercentage/100*648),:);
-    testSet2 = features(round(trainingPercentage/100*648)+1:648,:);
-    labelsTrain = labels(1:round(trainingPercentage/100*648));
-    labelsTest = labels(round(trainingPercentage/100*648)+1:648);
+    randFeatures = randperm(648);
+    trainSet1 = features(randFeatures(1:round(trainingPercentage/100*648)),:);
+    testSet2 = features(randFeatures(round(trainingPercentage/100*648)+1:end),:);
+    labelsTrain = labels(randFeatures(1:round(trainingPercentage/100*648)));
+    labelsTest = labels(randFeatures(round(trainingPercentage/100*648)+1:end));
 
     %% Calculate sizes
     
