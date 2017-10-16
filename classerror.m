@@ -1,20 +1,32 @@
-function [ err ] = classerror( y,yhat )
-%CLASSERROR computes the classification error for each class and averages
-%it
+function [errorClassification,err] = classerror(labels, y)
+%CLASSERROR computes the classification error and the classification for each class and averages
+%it (class error)
 %   
 %   Input:
-%       y:      the labels
-%       yhat:   the output of the classifier
+%       labels:      the labels
+%       y:   the output of the classifier
 %
 %   output:
-%       err:    the class-averaged classification error
-classes = unique(y);
-err_ = zeros(1,length(classes));
+%       errorClassification: the classification error
+%       err:    the class-averaged classification error (= Class error)
 
-for c=1:length(classes)
-    err_(c) = sum((y~=yhat) & (y == classes(c)))./sum(y==classes(c));% + sum((y~=yhat) & (y == 1))./sum(y==1));
+    classes = unique(labels);
+    err_ = zeros(1,length(classes));
+
+    for c=1:length(classes)
+        err_(c) = sum((labels~=y) & (labels == classes(c)))./sum(labels==classes(c));% + sum((labels~=y) & (labels == 1))./sum(labels==1));
+    end
+
+    err = mean(err_);
+
+    nCorrect = 0;
+
+    for i = 1:648
+        if (y(i) == labels(i))
+            nCorrect = nCorrect + 1;
+        end
+    end
+
+    errorClassification = 1 - nCorrect/648;
+
 end
-
-err = mean(err_);
-end
-
