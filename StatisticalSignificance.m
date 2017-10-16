@@ -37,11 +37,11 @@ legend('Correct Cursor Movement','Erroneous Cursor Movement');
 title('Histogram of feature 681')
 hold off;
 subplot(1,2,2)
-histogram(x(:,302));
+histogram(x(:,305));
 hold on
-histogram(y(:,302));
+histogram(y(:,305));
 box off;
-title('Histogram of feature 302')
+title('Histogram of feature 305')
 hold off;
 
 %% Boxplots
@@ -80,10 +80,10 @@ xticklabels({'Erroneous','Correct'});
 box off;
 title('Boxplot of feature 681')
 subplot(1,2,2)
-boxplot(features(:,302),labels);
+boxplot(features(:,305),labels);
 xticklabels({'Erroneous','Correct'});
 box off;
-title('Boxplot of feature 302')
+title('Boxplot of feature 305')
 
 
 %% Boxplots with Notch
@@ -121,16 +121,16 @@ xticklabels({'Erroneous','Correct'});
 title('Notch boxplot of feature 681')
 box off;
 subplot(1,2,2)
-boxplot(features(:,302),labels,'Notch','on');
+boxplot(features(:,305),labels,'Notch','on');
 xticklabels({'Erroneous','Correct'});
 box off;
-title('Notch boxplot of feature 302')
+title('Notch boxplot of feature 305')
 
 %% T-tests
 
 % Bad features = similar for each class
 % h = 0 -> null hypothesis not rejected -> come from same distribution
-[hBad1,pBad1] = ttest2(x(:,302),y(:,302));
+[hBad1,pBad1] = ttest2(x(:,305),y(:,305));
 [hBad2,pBad2] = ttest2(x(:,303),y(:,303));
 % For both examples, the null hypothesis cannot be rejected at level of
 % alpha -> classes not significantly different for those features

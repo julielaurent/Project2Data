@@ -36,8 +36,8 @@ for trainingPercentage = 10:5:90
     sizeTestClassA = size(testClassA);
     sizeTestClassB = size(testClassB);
     
-    ratioTrain(iPercentage) = sizeTrainClassA(1)/sizeTrainClassB(1);
-    ratioTest(iPercentage) = sizeTestClassA(1)/sizeTestClassB(1);
+    ratioTrain = sizeTrainClassA(1)/sizeTrainClassB(1);
+    ratioTest = sizeTestClassA(1)/sizeTestClassB(1);
     
     labelsOutputTrain = zeros(sizeTrain(1),1);
     labelsOutputTest = zeros(sizeTest(1),1);

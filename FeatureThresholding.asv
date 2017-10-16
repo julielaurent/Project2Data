@@ -58,7 +58,7 @@ end
 
 figure('Color','w');
 title('Errors for Feature 681');
-hold on;
+holdon;
 th = -6:0.09:6;
 plot(th, errorClassification681, th, errorClass681);
 xlabel('Threshold'); ylabel('Error');
@@ -77,6 +77,6 @@ scatter(y(:,681),y(:,531),'.r');
 xlabel('Feature 681'); ylabel('Feature 531');
 hold on;
 line([optimalTH optimalTH],[-8 8],'Color','k','LineStyle','--');
-legend('Samples from Class A (correct cursor movement)','Samples from Class B (erroneous cursor movement)','Threshold classifier with minimal class error','Location','best');
+legend('Samples from Class A (correct cursor movement)','Samples from Class B (erroneous cursor movement)','Threshold with minimal class error','Location','best');
 hold off;
 
