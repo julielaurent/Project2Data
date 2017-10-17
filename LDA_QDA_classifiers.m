@@ -23,16 +23,20 @@ Quadr_y = predict(Quadrclassifier,features);
 [errorClassificationQuadr,errorClassQuadr] = classerror(labels, Quadr_y); % For Quadratic classifier
 
 % Plot of errors
-errorClassification = [errorClassificationLin,errorClassificationDiagLin,errorClassificationDiagQuadr,errorClassificationQuadr]
-errorClass = [errorClassLin,errorClassDiagLin,errorClassDiagQuadr,errorClassQuadr]
+%errorClassification = [errorClassificationLin,errorClassificationDiagLin,errorClassificationDiagQuadr,errorClassificationQuadr]
+%errorClass = [errorClassLin,errorClassDiagLin,errorClassDiagQuadr,errorClassQuadr]
 
 figure('Color','w');
-plot(errorClassification)
-hold on
-plot(errorClass)
-ylabel('Error'); %xlabel('Linear','Diaglinear','Diagquadratic','Quadratic')
-legend('Classification error','Class error');
+title('Error for Each Classifier');
+hold on;
+y = [errorClassLin,errorClassificationLin;errorClassDiagLin,errorClassificationDiagLin;errorClassDiagQuadr,errorClassificationDiagQuadr;errorClassQuadr,errorClassificationQuadr];
+bar(y);
+ylabel('Error');
+xticks([1 2 3 4]);
+xticklabels({'Linear','DiagLinear','DiagQuadratic','Quadratic'});
+legend('Class error','Classification error');
 box off;
+hold off;
 % --> Best error with quadratic classifier
 
 %% Classifier with prior proba uniform
@@ -53,16 +57,20 @@ Quadrprior_y = predict(Quadrclassifierprior,features);
 [errorClassificationQuadrprior,errorClassQuadrprior] = classerror(labels, Quadrprior_y); 
 
 % Plot of prior errors
-errorClassificationprior = [errorClassificationLinprior,errorClassificationDiagLinprior,errorClassificationDiagQuadrprior,errorClassificationQuadrprior]
-errorClassprior = [errorClassLinprior,errorClassDiagLinprior,errorClassDiagQuadrprior,errorClassQuadrprior]
+%errorClassificationprior = [errorClassificationLinprior,errorClassificationDiagLinprior,errorClassificationDiagQuadrprior,errorClassificationQuadrprior]
+%errorClassprior = [errorClassLinprior,errorClassDiagLinprior,errorClassDiagQuadrprior,errorClassQuadrprior]
 
 figure('Color','w');
-plot(errorClassification)
-hold on
-plot(errorClass)
-ylabel('Error'); %xlabel('Linear','Diaglinear','Diagquadratic','Quadratic')
-legend('Classification error','Class error');
+title('Error for Each Classifier with Uniform Prior');
+hold on;
+y = [errorClassLinprior,errorClassificationLinprior;errorClassDiagLinprior,errorClassificationDiagLinprior;errorClassDiagQuadrprior,errorClassificationDiagQuadrprior;errorClassQuadrprior,errorClassificationQuadrprior];
+bar(y);
+ylabel('Error');
+xticks([1 2 3 4]);
+xticklabels({'Linear','DiagLinear','DiagQuadratic','Quadratic'});
+legend('Class error','Classification error');
 box off;
+hold off;
 
 ComparClassi = [errorClassificationQuadrprior,errorClassificationQuadr]
 ComparClass = [errorClassQuadrprior, errorClassQuadr]
