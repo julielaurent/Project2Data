@@ -20,8 +20,8 @@ function [errorClassification,err] = classerror(labels, y)
     err = mean(err_);
 
     nCorrect = 0;
-
-    for i = 1:648
+    labelSize = size(labels);
+    for i = 1:labelSize(1)
         if (y(i) == labels(i))
             nCorrect = nCorrect + 1;
         end
