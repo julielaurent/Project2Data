@@ -20,7 +20,7 @@ cp_N = cvpartition(N,'kfold',NumTestSets); % Outputs: Trainsize and Testsize con
 cp_labels = cvpartition (labels,'kfold',NumTestSets);
 C = cvpartition(N,'LeaveOut'); %"leave-one-out" cross validation
 
-% train= cp.training(2); --> je ne comprends pas pk ça a une taille de
+%train = cp.training(2); --> je ne comprends pas pk ça a une taille de
 % 648...un subset est justement censé avoir moins de samples que le nombre
 % total de samples non ?
 % train_size = size(cp.training(2));
@@ -29,14 +29,15 @@ C = cvpartition(N,'LeaveOut'); %"leave-one-out" cross validation
 
 %essai
 
-for i=1:NumTestSets
-        test_set = cp_N.test(i);
+for i = 1:NumTestSets
         
-        for j=1:NumTestSets
+    test_set = cp_N.test(i);
+        
+        for j = 1:NumTestSets
             if (i == 10) & (j == i)
                 train_set = cp_N.training(j);
-            elseif (i~=10) & (j == i) 
-                j = j+1;
+            elseif (i ~= 10) & (j == i) 
+                j = j + 1;
                 train_set = cp_N.training(j);
             else
                 train_set = cp_N.training(j);
@@ -50,8 +51,3 @@ for i=1:NumTestSets
         end
     
 end
-
-
-
-
-

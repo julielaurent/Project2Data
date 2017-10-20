@@ -9,7 +9,7 @@ load('dataset_ERP.mat');
 features = features(:,1:5:300);
 
 % Separate train and test set 50%/50%  -> voir code Julie
-%% Randomize and Split Dataset
+%% Randomize the samples and Split Dataset
 trainingPercentage = 50;
 
 randFeatures = randperm(648);
