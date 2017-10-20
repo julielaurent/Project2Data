@@ -145,3 +145,9 @@ xticklabels({'DiagLinear','Linear','DiagQuadratic'});
 %axis([0.5 3.5 0 0.1]);
 box off;
 hold off;
+
+%% Peut etre faire un graph avec normal cv ET repartition à chaque boucle ?
+% Jouer avec les hold on pour pas avoir à tout refaire ??
+% Commenter leave one out part -> enlever hold off àla fin du 1er graph et
+% mettre hold on à la place -> faire tourner le code -> décommenter la
+% repartition -> refaire tourner le code
