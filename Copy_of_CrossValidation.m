@@ -32,15 +32,18 @@ errClassDiagQuadr = zeros(cp_N.NumTestSets,1);
 % For a different testSet i each time
 for i = 1:cp_N.NumTestSets
     
+    % A rajouter pour derniere question
+    %cp_N = repartition(cp_N);
+    
     % Attention,ici le cp_N.taining rend les INDICES des train samples
     % Quand trainIdx = 1 -> sample qui va dans le trainSet
     trainIdx = cp_N.training(i);
     trainSet = features(trainIdx,:);
     trainLabels = labels(trainIdx);
-    
+   
     % Attention, ici le cp_N.test rend les INDICES des test samples
     % Quand testIdx = 1 -> sample va dans le testSet
-    testIdx= cp_N.test(i);
+    testIdx = cp_N.test(i);
     testSet = features(testIdx,:);
     testLabels = labels(testIdx);
     
@@ -52,7 +55,7 @@ for i = 1:cp_N.NumTestSets
     DiagLinclassifier = fitcdiscr(trainSet,trainLabels,'discrimtype', 'diagLinear');
     DiagLin_y = predict(DiagLinclassifier,testSet);
     errClassDiagLin(i) = classerrorOriginal(testLabels, DiagLin_y);
-    
+   
     DiagQuadrclassifier = fitcdiscr(trainSet,trainLabels,'discrimtype', 'diagQuadratic');
     DiagQuadr_y = predict(DiagQuadrclassifier,testSet);
     errClassDiagQuadr(i) = classerrorOriginal(testLabels, DiagQuadr_y);
@@ -90,6 +93,9 @@ errClassDiagLinC = zeros(C.NumTestSets,1);
 errClassDiagQuadrC = zeros(C.NumTestSets,1);
 
 for i = 1:C.NumTestSets
+    
+    % A rajouter pour derniere question
+    %C = repartition(C);
     
     % Attention,ici le cp_N.taining rend les INDICES des train samples
     % Quand trainIdx = 1 -> sample qui va dans le trainSet
