@@ -72,5 +72,17 @@ legend('Class error','Classification error');
 box off;
 hold off;
 
-ComparClassi = [errorClassificationQuadrprior,errorClassificationQuadr]
-ComparClass = [errorClassQuadrprior, errorClassQuadr]
+%ComparClassi = [errorClassificationQuadrprior,errorClassificationQuadr]
+%ComparClass = [errorClassQuadrprior, errorClassQuadr]
+
+figure('Color','w');
+title('Comparison of the class Error for different Prior Probabilities');
+hold on;
+y = [errorClassLin,errorClassLinprior;errorClassDiagLin,errorClassDiagLinprior;errorClassDiagQuadr,errorClassDiagQuadrprior;errorClassQuadr,errorClassQuadrprior];
+bar(y);
+ylabel('Error');
+xticks([1 2 3 4]);
+xticklabels({'Linear','DiagLinear','DiagQuadratic','Quadratic'});
+legend('Empirical probability','Uniform probability');
+box off;
+hold off;

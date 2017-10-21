@@ -64,9 +64,9 @@ Lin_yTest2 = predict(LinclassifierTest,testSet);
 
 %% DiagQuadr classifier - training on training and testing set
 % Train diagonal quadratic classifier on training set
-DiagQuadrclassifierTrain = fitcdiscr(trainSet,labelsTrain,'discrimtype', 'diagquadratic'); % QDA
+DiagQuadrclassifierTrain = fitcdiscr(trainSet,labelsTrain,'discrimtype', 'diagquadratic'); % LDA
 % Train linear classifier on testing set
-DiagQuadrclassifierTest = fitcdiscr(testSet,labelsTest,'discrimtype', 'diagquadratic'); % QDA
+DiagQuadrclassifierTest = fitcdiscr(testSet,labelsTest,'discrimtype', 'diagquadratic'); % LDA
 
 % Compute the error on TRAINING set
 % -> after classifier trained on training set % training error
@@ -112,8 +112,7 @@ DiagQuadr_yTest2 = predict(DiagQuadrclassifierTest,testSet);
 % covariance a une ligne ou colonne = 0, car on a des features corr?l?s ?
 % 100% (-> d?truit colonne ou ligne). -> QDA pas adapt? pour nous car trop
 % de redondance dans nos donn?es
-% Julie -> j'arrive pas non plus a utiliser quadratic... Oui mais c'est
-% normal, ? cause de ce que j'ai expliqu? au dessus
+% Julie -> j'arrive pas non plus a utiliser quadratic...
 
 %% Graphs
 
