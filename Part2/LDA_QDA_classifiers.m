@@ -26,18 +26,29 @@ Quadr_y = predict(Quadrclassifier,features);
 %errorClassification = [errorClassificationLin,errorClassificationDiagLin,errorClassificationDiagQuadr,errorClassificationQuadr]
 %errorClass = [errorClassLin,errorClassDiagLin,errorClassDiagQuadr,errorClassQuadr]
 
+% figure('Color','w');
+% title('Error for Each Classifier');
+% hold on;
+% y = [errorClassLin,errorClassificationLin;errorClassDiagLin,errorClassificationDiagLin;errorClassDiagQuadr,errorClassificationDiagQuadr;errorClassQuadr,errorClassificationQuadr];
+% bar(y);
+% ylabel('Error');
+% xticks([1 2 3 4]);
+% xticklabels({'Linear','DiagLinear','DiagQuadratic','Quadratic'});
+% legend('Class error','Classification error');
+% box off;
+% hold off;
+% --> Best error with quadratic classifier
+
 figure('Color','w');
-title('Error for Each Classifier');
+title('Class Error for Each Classifier');
 hold on;
-y = [errorClassLin,errorClassificationLin;errorClassDiagLin,errorClassificationDiagLin;errorClassDiagQuadr,errorClassificationDiagQuadr;errorClassQuadr,errorClassificationQuadr];
+y = [errorClassLin;errorClassDiagLin;errorClassDiagQuadr;errorClassQuadr];
 bar(y);
 ylabel('Error');
 xticks([1 2 3 4]);
 xticklabels({'Linear','DiagLinear','DiagQuadratic','Quadratic'});
-legend('Class error','Classification error');
 box off;
 hold off;
-% --> Best error with quadratic classifier
 
 %% Classifier with prior proba uniform
 %  Quadratic has the best error but we look at all (d'apr?s assistant)

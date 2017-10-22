@@ -8,8 +8,8 @@ features = features(:,1:5:300);
 size_labels = size(labels);
 
 % Faut-il randomizer les data ? -> remplacer "features" par "newFeatures"
-% Possible réponse à ma question : non parce que cv partition le fait deja
-% diféremment à chaque fois
+% Possible r?ponse ? ma question : non parce que cv partition le fait deja
+% dif?remment ? chaque fois --> Je pense pareil
 %randFeatures = randperm(648);
 %newFeatures = features(randFeatures,:);
 
@@ -62,10 +62,13 @@ for i = 1:cp_N.NumTestSets
     
 end
 
-% Mean of errors
-cvErrLin = sum(errClassLin)/sum(cp_N.TestSize);
-cvErrDiagLin = sum(errClassDiagLin)/sum(cp_N.TestSize);
-cvErrDiagQuadr = sum(errClassDiagQuadr)/sum(cp_N.TestSize);
+% % Mean of errors --> Alice: je pense que c'est plutot ca
+% cvErrLin = sum(errClassLin)/sum(cp_N.TestSize);
+% cvErrDiagLin = sum(errClassDiagLin)/sum(cp_N.TestSize);
+% cvErrDiagQuadr = sum(errClassDiagQuadr)/sum(cp_N.TestSize);
+cvErrLin = mean(errClassLin);
+cvErrDiagLin = mean(errClassDiagLin);
+cvErrDiagQuadr = mean(errClassDiagQuadr);
 
 % Standard deviations of errors
 cvStdLin = std(errClassLin);
@@ -124,10 +127,13 @@ for i = 1:C.NumTestSets
     
 end
 
-% Mean of errors
-cvErrLinC = sum(errClassLinC)/sum(C.TestSize);
-cvErrDiagLinC = sum(errClassDiagLinC)/sum(C.TestSize);
-cvErrDiagQuadrC = sum(errClassDiagQuadrC)/sum(C.TestSize);
+% Mean of errors --> Alice: Idem
+% cvErrLinC = sum(errClassLinC)/sum(C.TestSize);
+% cvErrDiagLinC = sum(errClassDiagLinC)/sum(C.TestSize);
+% cvErrDiagQuadrC = sum(errClassDiagQuadrC)/sum(C.TestSize);
+cvErrLinC = mean(errClassLinC);
+cvErrDiagLinC = mean(errClassDiagLinC);
+cvErrDiagQuadrC = mean(errClassDiagQuadrC);
 
 % Standard deviations of errors
 cvStdLinC = std(errClassLinC);
@@ -146,8 +152,8 @@ xticklabels({'DiagLinear','Linear','DiagQuadratic'});
 box off;
 hold off;
 
-%% Peut etre faire un graph avec normal cv ET repartition à chaque boucle ?
-% Jouer avec les hold on pour pas avoir à tout refaire ??
-% Commenter leave one out part -> enlever hold off àla fin du 1er graph et
-% mettre hold on à la place -> faire tourner le code -> décommenter la
+%% Peut etre faire un graph avec normal cv ET repartition ? chaque boucle ?
+% Jouer avec les hold on pour pas avoir ? tout refaire ??
+% Commenter leave one out part -> enlever hold off ?la fin du 1er graph et
+% mettre hold on ? la place -> faire tourner le code -> d?commenter la
 % repartition -> refaire tourner le code
