@@ -5,8 +5,17 @@ clc;
 load('dataset_ERP.mat');
 
 features = features(:,1:5:300);
-labels = labels(:,1:5:300);
-%size_labels = size(labels);
+
+
+%% Randomize the samples and Split Dataset  
+% Je sais pas si il faut faire ca ici
+trainingPercentage = 50;
+
+randFeatures = randperm(648);
+trainSet = features(randFeatures(1:round(trainingPercentage/100*648)),:); % set 1
+testSet = features(randFeatures(round(trainingPercentage/100*648)+1:end),:); % set 2
+labelsTrain = labels(randFeatures(1:round(trainingPercentage/100*648)));
+labelsTest = labels(randFeatures(round(trainingPercentage/100*648)+1:end));
 
 
 %% Confusion matrix
@@ -16,33 +25,7 @@ labels = labels(:,1:5:300);
 
 % J'ai utilis? diagquadr parce que ? priori le meilleur?
 
-cp_N = cvpartition(N,'kfold',10); % Outputs: Trainsize and Testsize contain the size (= number of samples) of each train/test set
+DiagQuadrclassifier = fitcdiscr(trainSet,labelsTrain ,'discrimtype', 'diagQuadratic');
+DiagQuadr_y = predict(DiagQuadrclassifier,testSet);
 
-% Initialization of error vectors
-errClassDiagQuadr = zeros(cp_N.NumTestSets,1);
-
-% For a different testSet i each time
-for i = 1:cp_N.NumTestSets
-    % Attention,ici le cp_N.taining rend les INDICES des train samples
-    % Quand trainIdx = 1 -> sample qui va dans le trainSet
-    trainIdx = cp_N.training(i);
-    trainSet = features(trainIdx,:);
-    trainLabels = labels(trainIdx);
-   
-    % Attention, ici le cp_N.test rend les INDICES des test samples
-    % Quand testIdx = 1 -> sample va dans le testSet
-    testIdx = cp_N.test(i);
-    testSet = features(testIdx,:);
-    testLabels = labels(testIdx);
-    
-    % Calculus of class errors
-    DiagQuadrclassifier = fitcdiscr(trainSet,trainLabels,'discrimtype', 'diagQuadratic');
-    DiagQuadr_y = predict(DiagQuadrclassifier,testSet);
-    errClassDiagQuadr(i) = classerrorOriginal(testLabels, DiagQuadr_y);
-end
-
-
-
-
-predicted = ...
-CM = confusionmat(labels,predicted);
+CM = confusionmat(labelsTest,DiagQuadr_y);
