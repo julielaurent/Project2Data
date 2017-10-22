@@ -18,12 +18,12 @@ labelsTest = labels(randFeatures(round(trainingPercentage/100*648)+1:end));
 
 %% DiagLinear classifier - training on training and testing sets
 
-% Train diagonal linear classifier on training set
+% Train diagonal linear classifier on training set/set1
 DiagLinclassifierTrain = fitcdiscr(trainSet,labelsTrain,'discrimtype', 'diaglinear'); % LDA
-% Train diagonal linear classifier on testing set
+% Train diagonal linear classifier on testing set/set2
 DiagLinclassifierTest = fitcdiscr(testSet,labelsTest,'discrimtype', 'diaglinear'); % LDA
 
-% Compute the error on TRAINING set
+% Compute the error on TRAINING set/set1
 % -> after classifier trained on training set % training error
 DiagLin_yTrain1 = predict(DiagLinclassifierTrain,trainSet);
 [errorClassificationDiagLinTrain1,errorClassDiagLinTrain1] = classerror(labelsTrain, DiagLin_yTrain1);
@@ -31,22 +31,22 @@ DiagLin_yTrain1 = predict(DiagLinclassifierTrain,trainSet);
 DiagLin_yTrain2 = predict(DiagLinclassifierTest,trainSet);
 [errorClassificationDiagLinTrain2,errorClassDiagLinTrain2] = classerror(labelsTrain, DiagLin_yTrain2);
 
-% Compute the error on TESTING set
-% -> after classifier trained on training set % training error
+% Compute the error on TESTING set/set2
+% -> after classifier trained on training set % testing error
 DiagLin_yTest1 = predict(DiagLinclassifierTrain,testSet);
 [errorClassificationDiagLinTest1,errorClassDiagLinTest1] = classerror(labelsTest, DiagLin_yTest1);
-% -> after classifier trained on testing set % testing error
+% -> after classifier trained on testing set % training error
 DiagLin_yTest2 = predict(DiagLinclassifierTest,testSet);
-[errorClassificationDiagLinTest2,errorClassDiagLinTest2] = classerror(labelsTrain, DiagLin_yTest2);
+[errorClassificationDiagLinTest2,errorClassDiagLinTest2] = classerror(labelsTest, DiagLin_yTest2);
 
 %% Linear classifier - training on training and testing set
 
-% Train linear classifier on training set
+% Train linear classifier on training set/set1
 LinclassifierTrain = fitcdiscr(trainSet,labelsTrain,'discrimtype', 'linear'); % LDA
-% Train linear classifier on testing set
+% Train linear classifier on testing set/set2
 LinclassifierTest = fitcdiscr(testSet,labelsTest,'discrimtype', 'linear'); % LDA
 
-% Compute the error on TRAINING set
+% Compute the error on TRAINING set/set1
 % -> after classifier trained on training set % training error
 Lin_yTrain1 = predict(LinclassifierTrain,trainSet);
 [errorClassificationLinTrain1,errorClassLinTrain1] = classerror(labelsTrain, Lin_yTrain1);
@@ -54,21 +54,21 @@ Lin_yTrain1 = predict(LinclassifierTrain,trainSet);
 Lin_yTrain2 = predict(LinclassifierTest,trainSet);
 [errorClassificationLinTrain2,errorClassLinTrain2] = classerror(labelsTrain, Lin_yTrain2);
 
-% Compute the error on TESTING set
-% -> after classifier trained on training set % training error
+% Compute the error on TESTING set/set2
+% -> after classifier trained on training set % testing error
 Lin_yTest1 = predict(LinclassifierTrain,testSet);
 [errorClassificationLinTest1,errorClassLinTest1] = classerror(labelsTest, Lin_yTest1);
-% -> after classifier trained on testing set % testing error
+% -> after classifier trained on testing set % training error
 Lin_yTest2 = predict(LinclassifierTest,testSet);
-[errorClassificationLinTest2,errorClassLinTest2] = classerror(labelsTrain, Lin_yTest2);
+[errorClassificationLinTest2,errorClassLinTest2] = classerror(labelsTest, Lin_yTest2);
 
 %% DiagQuadr classifier - training on training and testing set
-% Train diagonal quadratic classifier on training set
+% Train diagonal quadratic classifier on training set/set1
 DiagQuadrclassifierTrain = fitcdiscr(trainSet,labelsTrain,'discrimtype', 'diagquadratic'); % QDA
-% Train linear classifier on testing set
+% Train linear classifier on testing set/set2
 DiagQuadrclassifierTest = fitcdiscr(testSet,labelsTest,'discrimtype', 'diagquadratic'); % QDA
 
-% Compute the error on TRAINING set
+% Compute the error on TRAINING set/set1
 % -> after classifier trained on training set % training error
 DiagQuadr_yTrain1 = predict(DiagQuadrclassifierTrain,trainSet);
 [errorClassificationDiagQuadrTrain1,errorClassDiagQuadrTrain1] = classerror(labelsTrain, DiagQuadr_yTrain1);
@@ -76,13 +76,13 @@ DiagQuadr_yTrain1 = predict(DiagQuadrclassifierTrain,trainSet);
 DiagQuadr_yTrain2 = predict(DiagQuadrclassifierTest,trainSet);
 [errorClassificationDiagQuadrTrain2,errorClassDiagQuadrTrain2] = classerror(labelsTrain, DiagQuadr_yTrain2);
 
-% Compute the error on TESTING set
-% -> after classifier trained on training set % training error
+% Compute the error on TESTING set/set2
+% -> after classifier trained on training set % testing error
 DiagQuadr_yTest1 = predict(DiagQuadrclassifierTrain,testSet);
 [errorClassificationDiagQuadrTest1,errorClassDiagQuadrTest1] = classerror(labelsTest, DiagQuadr_yTest1);
-% -> after classifier trained on testing set % testing error
+% -> after classifier trained on testing set % training error
 DiagQuadr_yTest2 = predict(DiagQuadrclassifierTest,testSet);
-[errorClassificationDiagQuadrTest2,errorClassDiagQuadrTest2] = classerror(labelsTrain, DiagQuadr_yTest2);
+[errorClassificationDiagQuadrTest2,errorClassDiagQuadrTest2] = classerror(labelsTest, DiagQuadr_yTest2);
 
 %% Quadratic classifier - training on training and testing set
 
@@ -125,12 +125,12 @@ DiagQuadr_yTest2 = predict(DiagQuadrclassifierTest,testSet);
 figure('Color','w');
 title('Error on Set 1 Classification');
 hold on;
-bar([errorClassDiagLinTrain1,errorClassLinTrain2; errorClassLinTrain1,errorClassLinTrain2; errorClassDiagQuadrTrain1,errorClassDiagQuadrTrain2]);
-legend('Classifier trained on Set 1','Classifier Trained on Set 2');
+bar([errorClassDiagLinTrain1,errorClassDiagLinTrain2; errorClassLinTrain1,errorClassLinTrain2; errorClassDiagQuadrTrain1,errorClassDiagQuadrTrain2]);
+legend('Classifier trained on Set 1 (Training Error)','Classifier Trained on Set 2 (Testing Error)');
 ylabel('Error');
 xticks([1 2 3]);
 xticklabels({'DiagLinear','Linear','DiagQuadratic'});
-axis([0.5 3.5 0 0.8]);
+axis([0.5 3.5 0 0.4]);
 box off;
 hold off;
 
@@ -139,12 +139,12 @@ hold off;
 figure('Color','w');
 title('Error on Set 2 Classification');
 hold on;
-bar([errorClassDiagLinTest1,errorClassLinTest2; errorClassLinTest1,errorClassLinTest2; errorClassDiagQuadrTest1,errorClassDiagQuadrTest2]);
-legend('Classifier trained on Set 1','Classifier Trained on Set 2');
+bar([errorClassDiagLinTest2,errorClassDiagLinTest1; errorClassLinTest2,errorClassLinTest1; errorClassDiagQuadrTest2,errorClassDiagQuadrTest1]);
+legend('Classifier trained on Set 2 (Training Error)','Classifier Trained on Set 1 (Testing Error)');
 ylabel('Error');
 xticks([1 2 3]);
 xticklabels({'DiagLinear','Linear','DiagQuadratic'});
-axis([0.5 3.5 0 0.8]);
+axis([0.5 3.5 0 0.4]);
 box off;
 hold off;
 
