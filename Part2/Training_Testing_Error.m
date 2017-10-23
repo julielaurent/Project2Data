@@ -112,8 +112,7 @@ DiagQuadr_yTest2 = predict(DiagQuadrclassifierTest,testSet);
 % covariance a une ligne ou colonne = 0, car on a des features corr?l?s ?
 % 100% (-> d?truit colonne ou ligne). -> QDA pas adapt? pour nous car trop
 % de redondance dans nos donn?es
-% Julie -> j'arrive pas non plus a utiliser quadratic... 
-% Alice -> Oui mais c'est normal, a cause de ce que j'ai explique au dessus
+
 
 %% Graphs
 
