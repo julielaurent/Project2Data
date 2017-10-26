@@ -8,7 +8,6 @@ features = features(:,1:5:300);
 
 
 %% Randomize the samples and Split Dataset  
-% Je sais pas si il faut faire ca ici
 trainingPercentage = 50;
 
 randFeatures = randperm(648);
@@ -23,7 +22,6 @@ labelsTest = labels(randFeatures(round(trainingPercentage/100*648)+1:end));
 %     the known group labels G and the predicted group labels GHAT. G and
 %     GHAT are grouping variables with the same number of observations.
 
-% J'ai utilis? diagquadr parce que ? priori le meilleur?
 
 DiagQuadrclassifier = fitcdiscr(trainSet,labelsTrain ,'discrimtype', 'diagQuadratic');
 DiagQuadr_y = predict(DiagQuadrclassifier,testSet);

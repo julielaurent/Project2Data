@@ -83,9 +83,6 @@ legend('Class error','Classification error');
 box off;
 hold off;
 
-%ComparClassi = [errorClassificationQuadrprior,errorClassificationQuadr]
-%ComparClass = [errorClassQuadrprior, errorClassQuadr]
-
 figure('Color','w');
 title('Comparison of the class Error for different Prior Probabilities');
 hold on;

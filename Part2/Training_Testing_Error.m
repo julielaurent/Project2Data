@@ -107,17 +107,11 @@ DiagQuadr_yTest2 = predict(DiagQuadrclassifierTest,testSet);
 % Quadr_yTest2 = predict(QuadrclassifierTest,testSet);
 % [errorClassificationQuadrTest2,errorClassQuadrTest2] = classerror(labelsTrain, Quadr_yTest2);
 
-%% Pbm avec Singular matrix
-% Singular matrix -> pas inversible car determinant nul. Matrice de
-% covariance a une ligne ou colonne = 0, car on a des features corr?l?s ?
-% 100% (-> d?truit colonne ou ligne). -> QDA pas adapt? pour nous car trop
-% de redondance dans nos donn?es
+
+% Error, singular matrix
 
 
 %% Graphs
-
-% Use of class or classificaion error ??? --> Nope moi je dirais class
-% error
 
 % Testing on set 1 (training set)
 % Training with set 1 (training set) and 2 (testing set)
