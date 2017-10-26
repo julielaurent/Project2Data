@@ -90,7 +90,6 @@ for trainingPercentage = 10:5:90
     box off;
     hold off;
 
-    % Cohérence de prendre la mean juste pour avoir une valeur ???
     optimalTH1 = mean(th(find(errorClassification == min(errorClassification))));
     optimalTH2 = mean(th(find(errorClass == min(errorClass))));
 
