@@ -47,40 +47,37 @@ for j = 1:N
     end
 end    
 
-% Mean error and std accross folds (one for each model)
-cvErrDiagLinTest = zeros(N,1);
-cvErrDiagLinTrain = zeros(N,1);
-cvStdDiagLinTest = zeros(N,1);
-cvStdDiagLinTrain = zeros(N,1);
-
-for j = 1:N
-    % Mean of errors -> matrix NX1
-    cvErrDiagLinTest(j,1) = mean(errClassDiagLinTest(j,:));
-    cvErrDiagLinTrain(j,1) = mean(errClassDiagLinTrain(j,:));
-    
-    % Standard deviation of error -> matrix NX1
-    cvStdDiagLinTest(j,1) = std(errClassDiagLinTest(j,:));
-    cvStdDiagLinTrain(j,1) = std(errClassDiagLinTrain(j,:));
-end
-
-
+% % Mean error and std accross folds (one for each model)
+% cvErrDiagLinTest = zeros(N,1);
+% cvErrDiagLinTrain = zeros(N,1);
+% cvStdDiagLinTest = zeros(N,1);
+% cvStdDiagLinTrain = zeros(N,1);
+% 
+% for j = 1:N
+%     % Mean of errors -> matrix NX1
+%     cvErrDiagLinTest(j,1) = mean(errClassDiagLinTest(j,:));
+%     cvErrDiagLinTrain(j,1) = mean(errClassDiagLinTrain(j,:));
+%     
+%     % Standard deviation of error -> matrix NX1
+%     cvStdDiagLinTest(j,1) = std(errClassDiagLinTest(j,:));
+%     cvStdDiagLinTrain(j,1) = std(errClassDiagLinTrain(j,:));
+% end
 
 % Plot of the error for each cross-validation
 figure('Color','w');
-%title('Cross Validation Error for hyperparameter optimization');
-%hold on;
-plot(errClassDiagLinTest,'b')
+title('Training and Testing Error for each Number of Feature');
+hold on;
+plot(errClassDiagLinTest,'b');
+hold on;
+p1 = plot(mean(errClassDiagLinTest,2),'b','Linewidth',2);
+legend('Mean testing error');
+hold on;
+plot(errClassDiagLinTrain,'r');
+hold on;
+p2 = plot(mean(errClassDiagLinTrain,2),'r','Linewidth',2);
+legend([p1, p2],'Mean testing error', 'Mean training error');
 xlabel('Number of features');
 ylabel('Class Error');
-%legend('fold 1', 'fold 2', 'fold 3', 'fold 4', 'fold 5', 'fold 6', 'fold 7','fold 8', 'fold 9', 'fold 10');
-hold on
-plot(mean(errClassDiagLinTest,2),'b','Linewidth',2);
-legend('Mean testing error');
-hold on 
-plot(errClassDiagLinTrain,'r')
-hold on
-plot(mean(errClassDiagLinTrain,2),'r','Linewidth',2);
-legend('Mean training error');
 xticks([1 2 3 4 5]);
 box off;
 hold off;
