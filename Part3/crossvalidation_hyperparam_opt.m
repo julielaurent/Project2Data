@@ -18,7 +18,7 @@ errClassDiagLinTrain = zeros(N,cp_labels.NumTestSets);
 features_model = [];
 
 for j = 1:N
-    features_model = [features_model, features(:,orderedInd(N))];
+    features_model = [features_model, features(:,orderedInd(j))];
     % For a different testSet i each time
     for i = 1:cp_labels.NumTestSets
 
@@ -37,11 +37,11 @@ for j = 1:N
         % Classifier construction
         DiagLinclassifier = fitcdiscr(trainSet,trainLabels,'discrimtype', 'diagLinear');
 
-        % Calculus of class error on test set -> testing error (NXK)
+        % Calculus of class error on test set -> testing error (NxK)
         DiagLin_yTest = predict(DiagLinclassifier,testSet);
         errClassDiagLinTest(j,i) = classerror(testLabels, DiagLin_yTest);
         
-        % Calculus of class error on train set -> training error (NXK)
+        % Calculus of class error on train set -> training error (NxK)
         DiagLin_yTrain = predict(DiagLinclassifier,trainSet);
         errClassDiagLinTrain(j,i) = classerror(trainLabels, DiagLin_yTrain);
     end
