@@ -35,14 +35,15 @@ for p = 1:Kout
     trainLabels_out = labels(trainIdx_out);
     testLabels_out = labels(testIdx_out);
     
-    % Inner partition
+    % Inner partition on the train set of our outer-fold
     cp_labels_in = cvpartition (trainLabels_out,'kfold',Kin);
     
     features_model_in = [];
     
     for j = 1:N
        features_model_in = [features_model_in, features(trainIdx_out,orderedInd(j))];
-       % For a different testSet i each time
+       
+       % Kin-fold cv for each model with a different number of features
        for i = 1:Kin
 
           % Attention,ici le cp_N.taining rend les INDICES des train samples
@@ -74,7 +75,7 @@ for p = 1:Kout
     mean_validationerror_in = mean(validationerr_in,2);
     min_validationerror_in(p) = min(mean_validationerror_in);
     nbfeature_minTesterror = find(mean_validationerror_in == min_validationerror_in(p));
-    nbfeature_minTesterror_in(p) = nbfeature_minTesterror(1); % Si plusieurs min ?gaux, je choisis le premier
+    nbfeature_minTesterror_in(p) = nbfeature_minTesterror(1); % Si plusieurs min egaux, je choisis le premier
     
     % Construct our data matrix with the selected number of features
     for j = 1:nbfeature_minTesterror_in(p)
