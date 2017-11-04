@@ -5,15 +5,15 @@ clc;
 load('dataset_ERP.mat');
 
 
-% %% k-fold cross-validation with Fischer
-% 
+%% k-fold cross-validation with Fischer
+
 % % Rank of features
 % [orderedInd, orderedPower] = rankfeat(features,labels,'fisher');
 % 
 % cp_labels = cvpartition (labels,'kfold',10);
 % 
 % % Initialization of error vector
-% N = 10;
+% N = 60;
 % errClassDiagLinTest = zeros(N, cp_labels.NumTestSets);
 % errClassDiagLinTrain = zeros(N,cp_labels.NumTestSets);
 % features_model = [];
@@ -48,6 +48,11 @@ load('dataset_ERP.mat');
 %     end
 % end    
 % 
+% % Best number of features: 15
+% meanTesterror = mean(errClassDiagLinTest,2);
+% minerror = min(meanTesterror);
+% nbfeature_minTesterror = find(meanTesterror == minerror);
+% 
 % % Plot of the error for each cross-validation
 % figure('Color','w');
 % title('Training and Testing Error for each Number of Feature');
@@ -63,11 +68,12 @@ load('dataset_ERP.mat');
 % legend([p1, p2],'Mean testing error', 'Mean training error');
 % xlabel('Number of features');
 % ylabel('Class Error');
-% xticks([1 2 3 4 5 6 7 8 9 10]);
+% xticks(0:5:60);
 % box off;
 % hold off;
-% 
-% %% k-fold cross-validation with Correlation of Pearson
+% % Q?Alice: on voit que un type d'erreur la non? (? part les means)
+
+%% k-fold cross-validation with Correlation of Pearson
 % 
 % % Rank of features
 % [orderedInd, orderedPower] = rankfeat(features,labels,'corr');
@@ -75,7 +81,7 @@ load('dataset_ERP.mat');
 % cp_labels = cvpartition (labels,'kfold',10);
 % 
 % % Initialization of error vector
-% N = 10;
+% N = 60;
 % errClassDiagLinTest = zeros(N, cp_labels.NumTestSets);
 % errClassDiagLinTrain = zeros(N,cp_labels.NumTestSets);
 % features_model = [];
@@ -108,7 +114,12 @@ load('dataset_ERP.mat');
 %         DiagLin_yTrain = predict(DiagLinclassifier,trainSet);
 %         errClassDiagLinTrain(j,i) = classerror(trainLabels, DiagLin_yTrain);
 %     end
-% end    
+% end  
+% 
+% % Best number of features: 15 also
+% meanTesterror = mean(errClassDiagLinTest,2);
+% minerror = min(meanTesterror);
+% nbfeature_minTesterror = find(meanTesterror == minerror);
 % 
 % % Plot of the error for each cross-validation
 % figure('Color','w');
@@ -125,9 +136,10 @@ load('dataset_ERP.mat');
 % legend([p1, p2],'Mean testing error', 'Mean training error');
 % xlabel('Number of features');
 % ylabel('Class Error');
-% xticks([1 2 3 4 5 6 7 8 9 10]);
+% xticks(0:5:60);
 % box off;
 % hold off;
+% % Q?Alice: on voit que un type d'erreur la non? (? part les means)
 
 %% Random classifier
 
@@ -140,16 +152,20 @@ cp_labels = cvpartition (labels,'kfold',10);
 % Classifier construction --> vector 648X1 of random labels (0 or 1)
 Randomlabel = round(rand([648 1]));
 
+
+% Choice of the 15 best features
+features_model = [];
+for n = 1:15
+    features_model = [features_model features(:,orderedInd(n))];   
+end
+% features_model = [features(:,orderedInd(1)), features(:,orderedInd(2))];
+
+
 % Initialization of error vector
 N = 1000;
-%errClassRandomTest = zeros(N, cp_labels.NumTestSets);
-%errClassRandomTrain = zeros(N,cp_labels.NumTestSets);
 errClassRandomTest = [];
-features_model = [features(:,orderedInd(1)), features(:,orderedInd(2))];
 
 for j = 1:N
-    %features_model = [features_model, features(:,orderedInd(2))];
-    
     % Classifier construction --> vector 648X1 of random labels (0 or 1)
      Randomlabel = round(rand([648 1]));
     
