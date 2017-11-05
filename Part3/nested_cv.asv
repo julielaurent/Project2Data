@@ -103,7 +103,7 @@ for p = 1:Kout
 end
 
 %Calculus of median to comparewith previous code
-median_nbfeatures = median(nbfeature_minTesterror_in);
+median_nbfeatures = median(nbfeature_minTesterror
 
 %boxplots of distributions
 figure('Color','w');
@@ -115,3 +115,22 @@ boxplot([min_trainingerror_in; min_validationerror_in; errTest_out], l, 'Labels'
 box off;
 ylabel('Error');
 title('Boxplots of Error Distributions')
+
+
+% figure('Color','w');
+% title('Training and Testing Error for each Number of Feature');
+% hold on;
+% plot(errClassDiagLinTest,'b--','Linewidth',0.01);
+% hold on;
+% p1 = plot(mean(errClassDiagLinTest,2),'b','Linewidth',2);
+% legend('Mean testing error');
+% hold on;
+% plot(errClassDiagLinTrain,'r--','Linewidth',0.01);
+% hold on;
+% p2 = plot(mean(errClassDiagLinTrain,2),'r','Linewidth',2);
+% legend([p1, p2],'Mean testing error', 'Mean training error');
+% xlabel('Number of features');
+% ylabel('Class Error');
+% xticks(0:5:60);
+% box off;
+% hold off;
