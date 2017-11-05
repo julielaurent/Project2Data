@@ -98,7 +98,7 @@ for p = 1:Kout
        end
     %end
    
-    % Best number of features according to inner cross-validation
+    % Best validation error and total model
     mean_validationerror_in = mean(validationerr_in,2);
     optimal_validationerror_in(p) = min(mean_validationerror_in);
     mean_trainingerror_in = mean(errTrain_in,2);
@@ -106,10 +106,33 @@ for p = 1:Kout
     bestModelNumber = find(mean_validationerror_in == optimal_validationerror_in(p));
     bestModel_in(p) = bestModelNumber(1); % Si plusieurs min egaux, je choisis le premier
     
+%     %Calculus of means of errors per classifier and best number of features per
+%     %classifier
+%     mean_validationerror_diaglin = mean(validationerr_in(1:Nfeature,:),2);
+%     optimal_validationerror_diaglin(p) = min(mean_validationerror_diaglin);
+%     mean_trainingerror_diaglin = mean(errTrain_in(1:Nfeature,:),2);
+%     optimal_trainingerror_diaglin(p) = min(mean_trainingerror_diaglin);
+%     bestFeatureNumberDiaglin = model(find(mean_validationerror_diaglin == optimal_validationerror_diaglin(p))).number_of_features;
+%     bestFeatureNumberDiaglin_in(p) = bestFeatureNumberDiaglin(1);
+%     
+%     mean_validationerror_lin = mean(validationerr_in(Nfeature+1:2*Nfeature,:),2);
+%     optimal_validationerror_lin(p) = min(mean_validationerror_lin);
+%     mean_trainingerror_lin = mean(errTrain_in(Nfeature+1:2*Nfeature,:),2);
+%     optimal_trainingerror_lin(p) = min(mean_trainingerror_lin);
+%     bestFeatureNumberLin = model(find(mean_validationerror_lin == optimal_validationerror_lin(p))).number_of_features;
+%     bestFeatureNumberLin_in(p) = bestFeatureNumberLin(1);
+%     
+%     mean_validationerror_diagquadratic = mean(validationerr_in(2*Nfeature+1:end),2);
+%     optimal_validationerror_diagquadratic(p) = min(mean_validationerror_diagquadratic);
+%     mean_trainingerror_diagquadratic = mean(errTrain_in(2*Nfeature+1:end),2);
+%     optimal_trainingerror_diagquadratic(p) = min(mean_trainingerror_diagquadratic);
+%     bestFeatureNumberDiagquadratic = model(find(mean_validationerror_diagquadratic == optimal_validationerror_diagquadratic(p))).number_of_features;
+%     bestFeatureNumberDiagquadratic_in(p) = bestFeatureNumberDiagquadratic(1);
+    
     % Construct our data matrix with the selected number of features
     % Extract best model data 
     bestModelClassifier = model(bestModelNumber).classifier;
-    for j = 1:model(bestModelNumber(1)).number_of_features
+    for j = 1:model(bestModel_in(p)).number_of_features
        features_model_out = [features_model_out, features(:,orderedInd(j))];
     end
      
@@ -124,9 +147,13 @@ for p = 1:Kout
     yTest_out = predict(classifier_out,testSet_out);
     errTest_out(p) = classerror(testLabels_out, yTest_out);
     
+    %%%%% Calculer la test error pour chaque classifiermais je sais pas
+    %%%%% comment faire
+        
+    
     % Calculus of class error on train set -> training error (1xKout)
-    yTrain_out = predict(classifier_out,trainSet_out);
-    errTrain_out(p) = classerror(trainLabels_out, yTrain_out);
+    %yTrain_out = predict(classifier_out,trainSet_out);
+    %errTrain_out(p) = classerror(trainLabels_out, yTrain_out);
     
 end
 
@@ -139,7 +166,18 @@ l = zeros(9,1);
 l(1:Kout) = 1;
 l(Kout+1:2*Kout) = 2;
 l(2*Kout+1:3*Kout) = 3;
-boxplot([optimal_trainingerror_in; optimal_validationerror_in; errTest_out], l, 'Labels',{'Optimal Training','Optimal Validation','Test'});
+subplot(3,1,1);
+boxplot([optimal_trainingerror_diaglin; optimal_validationerror_diaglin; errTest_out], l, 'Labels',{'Optimal Training','Optimal Validation','Test'});
 box off;
 ylabel('Error');
-title('Boxplots of Error Distributions')
+title('Error Distributions for Diagonal Linear Classifier')
+subplot(3,1,2);
+boxplot([optimal_trainingerror_lin; optimal_validationerror_lin; errTest_out], l, 'Labels',{'Optimal Training','Optimal Validation','Test'});
+box off;
+ylabel('Error');
+title('Error Distributions for Linear Classifier')
+subplot(3,1,3);
+boxplot([optimal_trainingerror_diagquadratic; optimal_validationerror_diagquadratic; errTest_out], l, 'Labels',{'Optimal Training','Optimal Validation','Test'});
+box off;
+ylabel('Error');
+title('Error Distributionsfor DIagonal Quadratic Classifier')
