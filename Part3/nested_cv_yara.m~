@@ -23,7 +23,8 @@ cp_labels_out = cvpartition (labels,'kfold',Kout);
  validationerr_in = zeros(N,Kin); 
  errTrain_in = zeros(N,Kin); 
  nbfeature_minTesterror_in = zeros(1,Kout); 
- min_validationerror_in  = zeros(1,Kout); 
+ min_validationerror_in  = zeros(1,Kout);
+ min_errTrain_in = zeros(1,Kout);
 
 for p = 1:Kout
     features_model_out = [];
@@ -76,6 +77,8 @@ for p = 1:Kout
     min_validationerror_in(p) = min(mean_validationerror_in);
     nbfeature_minTesterror = find(mean_validationerror_in == min_validationerror_in(p));
     nbfeature_minTesterror_in(p) = nbfeature_minTesterror(1); % Si plusieurs min egaux, je choisis le premier
+    mean_errTrain_in = mean(errTrain_in,2);
+    min_errTrain_in(p) = min(mean_errTrain_in);
     
     % Construct our data matrix with the selected number of features
     for j = 1:nbfeature_minTesterror_in(p)
@@ -98,3 +101,35 @@ for p = 1:Kout
     errTrain_out(j,i) = classerror(trainLabels_out, yTrain_out);
     
 end
+
+figure('Color','w');
+subplot(1,3,1)
+boxplot(min_errTrain_in);
+%xticklabels({'Erroneous','Correct'});
+box off;
+title('Boxplot of optimal training error')
+subplot(1,3,2)
+boxplot(min_validationerror_in);
+%xticklabels({'Erroneous','Correct'});
+box off;
+title('Boxplot of optimal validation error')
+subplot(1,3,3)
+boxplot(errTest_out);
+
+% figure('Color','w');
+% title('Training and Testing Error for each Number of Feature');
+% hold on;
+% plot(errClassDiagLinTest,'b--','Linewidth',0.01);
+% hold on;
+% p1 = plot(mean(errClassDiagLinTest,2),'b','Linewidth',2);
+% legend('Mean testing error');
+% hold on;
+% plot(errClassDiagLinTrain,'r--','Linewidth',0.01);
+% hold on;
+% p2 = plot(mean(errClassDiagLinTrain,2),'r','Linewidth',2);
+% legend([p1, p2],'Mean testing error', 'Mean training error');
+% xlabel('Number of features');
+% ylabel('Class Error');
+% xticks(0:5:60);
+% box off;
+% hold off;
