@@ -8,7 +8,7 @@ load('dataset_ERP.mat');
 %% k-fold cross-validation with Fischer
 
 N = 60; %number of models tried
-Kout = 5; %number of outer loop folds
+Kout = 3; %number of outer loop folds
 Kin = 10; %number of inner folds
 
 % Rank of features
@@ -102,7 +102,7 @@ for p = 1:Kout
     
 end
 
-%Calculus of median to comparewith previous code
+%Calculus of median to compare with previous code
 median_nbfeatures = median(nbfeature_minTesterror_in);
 
 %boxplots of distributions
