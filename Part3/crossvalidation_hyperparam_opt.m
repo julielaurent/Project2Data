@@ -6,35 +6,37 @@ load('dataset_ERP.mat');
 
 
 %% k-fold cross-validation with Fischer
-
-% % Rank of features
-% [orderedInd, orderedPower] = rankfeat(features,labels,'fisher');
 % 
+% % Partition: K = 10
 % cp_labels = cvpartition (labels,'kfold',10);
 % 
 % % Initialization of error vector
 % N = 60;
 % errClassDiagLinTest = zeros(N, cp_labels.NumTestSets);
 % errClassDiagLinTrain = zeros(N,cp_labels.NumTestSets);
-% features_model = [];
 % 
-% for j = 1:N
-%     features_model = [features_model, features(:,orderedInd(j))];
-%     % For a different testSet i each time
-%     for i = 1:cp_labels.NumTestSets
-% 
-%         % Attention,ici le cp_N.taining rend les INDICES des train samples
-%         % Quand trainIdx = 1 -> sample qui va dans le trainSet
-%         trainIdx = cp_labels.training(i);
-%         trainSet = features_model(trainIdx,:);
-%         trainLabels = labels(trainIdx);
-% 
-%         % Attention, ici le cp_N.test rend les INDICES des test samples
-%         % Quand testIdx = 1 -> sample va dans le testSet
-%         testIdx = cp_labels.test(i);
-%         testSet = features_model(testIdx,:);
-%         testLabels = labels(testIdx);
+% % Cross-validation
+% for i = 1:cp_labels.NumTestSets
+%     
+%     % Initialisation
+%     features_model = [];
+%     
+%     % Attention,ici le cp_N.taining rend les INDICES des train samples
+%     % Quand trainIdx = 1 -> sample qui va dans le trainSet
+%     trainIdx = cp_labels.training(i);
+%     trainLabels = labels(trainIdx);
+%     testIdx = cp_labels.test(i);
+%     testLabels = labels(testIdx);
+%     
+%     % Rank of features on training set
+%     [orderedInd, orderedPower] = rankfeat(features(trainIdx,:),labels(trainIdx),'fisher');
 %         
+%    for j = 1:N
+%         features_model = [features_model, features(:,orderedInd(j))];
+% 
+%         trainSet = features_model(trainIdx,:);
+%         testSet = features_model(testIdx,:);
+%          
 %         % Classifier construction
 %         DiagLinclassifier = fitcdiscr(trainSet,trainLabels,'discrimtype', 'diagLinear');
 % 
@@ -48,7 +50,7 @@ load('dataset_ERP.mat');
 %     end
 % end    
 % 
-% % Best number of features: 15
+% % Best number of features with min test error
 % meanTesterror = mean(errClassDiagLinTest,2);
 % minerror = min(meanTesterror);
 % nbfeature_minTesterror = find(meanTesterror == minerror);
@@ -72,38 +74,39 @@ load('dataset_ERP.mat');
 % xticks(0:5:60);
 % box off;
 % hold off;
-% Q?Alice: on voit que un type d'erreur la non? (? part les means)
 
 %% k-fold cross-validation with Correlation of Pearson
 % 
-% % Rank of features
-% [orderedInd, orderedPower] = rankfeat(features,labels,'corr');
-% 
+% % Partition: K = 10
 % cp_labels = cvpartition (labels,'kfold',10);
 % 
 % % Initialization of error vector
 % N = 60;
 % errClassDiagLinTest = zeros(N, cp_labels.NumTestSets);
 % errClassDiagLinTrain = zeros(N,cp_labels.NumTestSets);
-% features_model = [];
 % 
-% for j = 1:N
-%     features_model = [features_model, features(:,orderedInd(j))];
-%     % For a different testSet i each time
-%     for i = 1:cp_labels.NumTestSets
-% 
-%         % Attention,ici le cp_N.taining rend les INDICES des train samples
-%         % Quand trainIdx = 1 -> sample qui va dans le trainSet
-%         trainIdx = cp_labels.training(i);
-%         trainSet = features_model(trainIdx,:);
-%         trainLabels = labels(trainIdx);
-% 
-%         % Attention, ici le cp_N.test rend les INDICES des test samples
-%         % Quand testIdx = 1 -> sample va dans le testSet
-%         testIdx = cp_labels.test(i);
-%         testSet = features_model(testIdx,:);
-%         testLabels = labels(testIdx);
+% % Cross-validation
+% for i = 1:cp_labels.NumTestSets
+%     
+%     % Initialisation
+%     features_model = [];
+%     
+%     % Attention,ici le cp_N.taining rend les INDICES des train samples
+%     % Quand trainIdx = 1 -> sample qui va dans le trainSet
+%     trainIdx = cp_labels.training(i);
+%     trainLabels = labels(trainIdx);
+%     testIdx = cp_labels.test(i);
+%     testLabels = labels(testIdx);
+%     
+%     % Rank of features on training set
+%     [orderedInd, orderedPower] = rankfeat(features(trainIdx,:),labels(trainIdx),'corr');
 %         
+%    for j = 1:N
+%         features_model = [features_model, features(:,orderedInd(j))];
+% 
+%         trainSet = features_model(trainIdx,:);
+%         testSet = features_model(testIdx,:);
+%          
 %         % Classifier construction
 %         DiagLinclassifier = fitcdiscr(trainSet,trainLabels,'discrimtype', 'diagLinear');
 % 
@@ -115,12 +118,13 @@ load('dataset_ERP.mat');
 %         DiagLin_yTrain = predict(DiagLinclassifier,trainSet);
 %         errClassDiagLinTrain(j,i) = classerror(trainLabels, DiagLin_yTrain);
 %     end
-% end  
+% end   
 % 
-% % Best number of features: 15 also
+% % Best number of features
 % meanTesterror = mean(errClassDiagLinTest,2);
 % minerror = min(meanTesterror);
-% nbfeature_minTesterror = find(meanTesterror == minerror)
+% nbfeature_minTesterror = find(meanTesterror == minerror);
+% nbfeature_minTesterror = nbfeature_minTesterror(1) % If several min value, select the first one
 % 
 % % Plot of the error for each cross-validation
 % figure('Color','w');
@@ -140,71 +144,65 @@ load('dataset_ERP.mat');
 % xticks(0:5:60);
 % box off;
 % hold off;
-% % Q?Alice: on voit que un type d'erreur la non? (? part les means)
-% 
-%% Random classifier
 
-% Rank of features
-[orderedInd, orderedPower] = rankfeat(features,labels,'fisher');
+
+%% Random classifier
 
 % k-fold partition of our data
 cp_labels = cvpartition (labels,'kfold',10);
-
-% Classifier construction --> vector 648X1 of random labels (0 or 1)
-Randomlabel = round(rand([648 1]));
-
-
-% Choice of the 15 best features
-features_model = [];
-for n = 1:15
-    features_model = [features_model features(:,orderedInd(n))];   
-end
-% features_model = [features(:,orderedInd(1)), features(:,orderedInd(2))];
-
 
 % Initialization of error vector
 N = 1000;
 errClassRandomTest = [];
 
-for j = 1:N
-    % Classifier construction --> vector 648X1 of random labels (0 or 1)
-     Randomlabel = round(rand([648 1]));
+% Cross-validation
+for i = 1:cp_labels.NumTestSets
+      
+      % Initialization
+      features_model = [];
     
-    % For a different testSet i each time
-    for i = 1:cp_labels.NumTestSets
+      % Attention,ici le cp_N.taining rend les INDICES des train samples
+      % Quand trainIdx = 1 -> sample qui va dans le trainSet
+      trainIdx = cp_labels.training(i);
+      trainLabels = labels(trainIdx);
+      testIdx = cp_labels.test(i);
+      testLabels = labels(testIdx);
+        
+      % Rank of features on training set: v?rifier si on laisse fisher
+      [orderedInd, orderedPower] = rankfeat(features(trainIdx,:),labels(trainIdx),'fisher');
+        
+    for j = 1:N
+        features_model = [features_model features(:,orderedInd(j))];   
 
-        % Attention,ici le cp_N.taining rend les INDICES des train samples
-        % Quand trainIdx = 1 -> sample qui va dans le trainSet
-        trainIdx = cp_labels.training(i);
-        trainSet = features_model(trainIdx,:);
-        trainLabels = labels(trainIdx);
-
-        % Attention, ici le cp_N.test rend les INDICES des test samples
-        % Quand testIdx = 1 -> sample va dans le testSet
-        testIdx = cp_labels.test(i);
-        testSet = features_model(testIdx,:);
-        testLabels = labels(testIdx);
+        % Classifier construction --> vector 648X1 of random labels (0 or 1)
+        Randomlabel = round(rand([648 1]));
                       
         % Attribute our random label to test and train set
         RandomlabelTest = Randomlabel(testIdx);
         RandomlabelTrain = Randomlabel(trainIdx);
         
+        % Create our train and test set of inner loop for this model
+        trainSet = features_model(trainIdx,:);
+        testSet = features_model(testIdx,:);
+        
         % Calculus of class error on test set -> testing error (NxK)
         errClassRandomTest(j,i) = classerror(testLabels, RandomlabelTest);
     end
-    cv_errClassRandomTest = mean(errClassRandomTest,2);
 end
 
-min_cv_errClassRandomTest = min(cv_errClassRandomTest)
-find(cv_errClassRandomTest == min_cv_errClassRandomTest)
+% Best number of features
+meanTesterror = mean(errClassRandomTest,2);
+minerror = min(meanTesterror);
+nbfeature_minTesterror = find(meanTesterror == minerror);
+nbfeature_minTesterror = nbfeature_minTesterror(1) % If several min value, select the first one
 
-% % Plot of the mean error across folds for the 1000 repetitions
-% figure('Color','w');
-% title('Testing mean Error across folds for each repetition');
-% hold on;
-% plot(cv_errClassRandomTest,'b','Linewidth',2);
-% legend('Mean testing error');
-% xlabel('Repetition');
-% ylabel('Class Error');
-% box off;
-% hold off;
+% Plot of the mean error across folds for the 1000 repetitions
+figure('Color','w');
+title('Testing mean Error across folds for each repetition');
+hold on;
+plot(meanTesterror,'b','Linewidth',2);
+legend('Mean testing error');
+xlabel('Repetition');
+ylabel('Class Error');
+box off;
+hold off;
