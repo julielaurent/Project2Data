@@ -67,6 +67,6 @@ cvErrDiagLin = mean(errClassDiagLin);
 % Standard deviations of errors
 cvStdDiagLin = std(errClassDiagLin);
 % Minimal error
-cvErrMin = min(cvErrDiagLin);
+cvErrMin = min(errClassDiagLin);
 % Number of features with minimal error
-nb_features = find(cvErrDiagLin == cvErrMin);
+nb_features = nb_selectedFeatures(find(errClassDiagLin == cvErrMin));
