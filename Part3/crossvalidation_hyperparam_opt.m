@@ -151,54 +151,69 @@ load('dataset_ERP.mat');
 % k-fold partition of our data
 cp_labels = cvpartition (labels,'kfold',10);
 
-% Initialization of error vector
-N = 1000;
+% Initialization 
+R = 1000; % Number of repetitions
+N = 60; % Number of features max
 errClassRandomTest = [];
+meanTesterror = [];
 
-% Cross-validation
-for i = 1:cp_labels.NumTestSets
+for x = 1:R
+    % Cross-validation
+    for i = 1:cp_labels.NumTestSets
       
-      % Initialization
-      features_model = [];
+        % Initialization
+        features_model = [];
     
-      % Attention,ici le cp_N.taining rend les INDICES des train samples
-      % Quand trainIdx = 1 -> sample qui va dans le trainSet
-      trainIdx = cp_labels.training(i);
-      trainLabels = labels(trainIdx);
-      testIdx = cp_labels.test(i);
-      testLabels = labels(testIdx);
+         % Attention,ici le cp_N.taining rend les INDICES des train samples
+         % Quand trainIdx = 1 -> sample qui va dans le trainSet
+         trainIdx = cp_labels.training(i);
+         trainLabels = labels(trainIdx);
+         testIdx = cp_labels.test(i);
+         testLabels = labels(testIdx);
         
-      % Rank of features on training set: v?rifier si on laisse fisher
-      [orderedInd, orderedPower] = rankfeat(features(trainIdx,:),labels(trainIdx),'fisher');
+         % Rank of features on training set: v?rifier si on laisse fisher
+         [orderedInd, orderedPower] = rankfeat(features(trainIdx,:),labels(trainIdx),'fisher');
         
-    for j = 1:N
-        features_model = [features_model features(:,orderedInd(j))];   
+        for j = 1:N
+             features_model = [features_model features(:,orderedInd(j))];   
 
-        % Classifier construction --> vector 648X1 of random labels (0 or 1)
-        Randomlabel = round(rand([648 1]));
+             % Classifier construction --> vector 648X1 of random labels (0 or 1)
+             Randomlabel = round(rand([648 1]));
                       
-        % Attribute our random label to test and train set
-        RandomlabelTest = Randomlabel(testIdx);
-        RandomlabelTrain = Randomlabel(trainIdx);
+             % Attribute our random label to test and train set
+             RandomlabelTest = Randomlabel(testIdx);
+             RandomlabelTrain = Randomlabel(trainIdx);
         
-        % Create our train and test set of inner loop for this model
-        trainSet = features_model(trainIdx,:);
-        testSet = features_model(testIdx,:);
+             % Create our train and test set of inner loop for this model
+             trainSet = features_model(trainIdx,:);
+             testSet = features_model(testIdx,:);
         
-        % Calculus of class error on test set -> testing error (NxK)
-        errClassRandomTest(j,i) = classerror(testLabels, RandomlabelTest);
+             % Calculus of class error on test set -> testing error (NxK)
+             errClassRandomTest(j,i) = classerror(testLabels, RandomlabelTest);
+        end
     end
+
+    % Mean
+    meanTesterror_in = mean(errClassRandomTest,2); % Mean across folds
+    meanTesterror(x) = mean(meanTesterror_in); % Mean for each repetition
 end
 
-% Best number of features
-meanTesterror = mean(errClassRandomTest,2);
-minerror = min(meanTesterror);
-nbfeature_minTesterror = find(meanTesterror == minerror);
-nbfeature_minTesterror = nbfeature_minTesterror(1) % If several min value, select the first one
+minerror = min(meanTesterror); % Min test error across repetitions
+
+% Plot of the mean error across folds for the 1 repetition
+figure('Color','w');
+title('Testing mean Error across folds for one repetition');
+hold on;
+plot(meanTesterror_in,'b','Linewidth',2);
+legend('Mean testing error');
+xlabel('Number of features');
+ylabel('Class Error');
+box off;
+hold off;
 
 % Plot of the mean error across folds for the 1000 repetitions
 figure('Color','w');
-title('Testing mean Error across folds for each repetition');
+title('Mean Test Error for each repetition');
 hold on;
 plot(meanTesterror,'b','Linewidth',2);
 legend('Mean testing error');

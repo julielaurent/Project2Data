@@ -129,7 +129,7 @@ for p = 1:Kout
 %     bestFeatureNumberDiagquadratic_in(p) = bestFeatureNumberDiagquadratic(1);
 
     % Extract best model data 
-    bestModelClassifier = model(bestModelNumber).classifier; % Alice: Pk pas avec bestModel_in(p)????
+    bestModelClassifier = model(bestModel_in(p)).classifier; 
     
     % Construct our data matrix with the selected number of features on the
     % ranking done one the training set of the outer fold
