@@ -57,7 +57,7 @@ for i = 1:cp_labels_out.NumTestSets
     % Calculus of class errors
     DiagLinclassifier = fitcdiscr(trainSet_selectedFeatures,trainLabels,'discrimtype', 'diagLinear');
     DiagLin_y = predict(DiagLinclassifier,testSet_selectedFeatures);
-    errClassDiagLin(i) = classerrorOriginal(testLabels, DiagLin_y);
+    errClassDiagLin(i) = classerror(testLabels, DiagLin_y);
 
 end
 
