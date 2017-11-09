@@ -10,8 +10,8 @@ load('dataset_ERP.mat');
 Nfeature = 60; % number of features tried
 nModel = 0; 
 N = Nfeature * 3; %total number of models
-Kout = 3; %number of outer loop folds
-Kin = 5; %number of inner folds
+Kout = 5; %number of outer loop folds
+Kin = 10; %number of inner folds
 classifierType = {'diaglinear','linear','diagquadratic'};
 
 model = struct('classifier',[],'number_of_features',[]);
@@ -160,24 +160,24 @@ end
 %Calculus of best model characteristics
 model(bestModel_in)
 
-%boxplots of distributions
-figure('Color','w');
-l = zeros(9,1);
-l(1:Kout) = 1;
-l(Kout+1:2*Kout) = 2;
-l(2*Kout+1:3*Kout) = 3;
-subplot(3,1,1);
-boxplot([optimal_trainingerror_diaglin; optimal_validationerror_diaglin; errTest_out], l, 'Labels',{'Optimal Training','Optimal Validation','Test'});
-box off;
-ylabel('Error');
-title('Error Distributions for Diagonal Linear Classifier')
-subplot(3,1,2);
-boxplot([optimal_trainingerror_lin; optimal_validationerror_lin; errTest_out], l, 'Labels',{'Optimal Training','Optimal Validation','Test'});
-box off;
-ylabel('Error');
-title('Error Distributions for Linear Classifier')
-subplot(3,1,3);
-boxplot([optimal_trainingerror_diagquadratic; optimal_validationerror_diagquadratic; errTest_out], l, 'Labels',{'Optimal Training','Optimal Validation','Test'});
-box off;
-ylabel('Error');
-title('Error Distributionsfor Diagonal Quadratic Classifier')
+% %boxplots of distributions
+% figure('Color','w');
+% l = zeros(9,1);
+% l(1:Kout) = 1;
+% l(Kout+1:2*Kout) = 2;
+% l(2*Kout+1:3*Kout) = 3;
+% subplot(3,1,1);
+% boxplot([optimal_trainingerror_diaglin; optimal_validationerror_diaglin; errTest_out], l, 'Labels',{'Optimal Training','Optimal Validation','Test'});
+% box off;
+% ylabel('Error');
+% title('Error Distributions for Diagonal Linear Classifier')
+% subplot(3,1,2);
+% boxplot([optimal_trainingerror_lin; optimal_validationerror_lin; errTest_out], l, 'Labels',{'Optimal Training','Optimal Validation','Test'});
+% box off;
+% ylabel('Error');
+% title('Error Distributions for Linear Classifier')
+% subplot(3,1,3);
+% boxplot([optimal_trainingerror_diagquadratic; optimal_validationerror_diagquadratic; errTest_out], l, 'Labels',{'Optimal Training','Optimal Validation','Test'});
+% box off;
+% ylabel('Error');
+% title('Error Distributionsfor Diagonal Quadratic Classifier')

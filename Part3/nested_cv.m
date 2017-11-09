@@ -8,8 +8,8 @@ load('dataset_ERP.mat');
 %% k-fold cross-validation with Fischer
 
 N = 60; %number of models tried
-Kout = 3; %number of outer loop folds
-Kin = 5; %number of inner folds
+Kout = 5; %number of outer loop folds
+Kin = 10; %number of inner folds
 
 % Outer partition
 cp_labels_out = cvpartition (labels,'kfold',Kout);

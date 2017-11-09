@@ -8,7 +8,7 @@ size_labels = size(labels);
 % Total number of samples
 N = size_labels(1);
 % CV partition
-cp_labels_out = cvpartition (labels,'kfold',3);
+cp_labels_out = cvpartition (labels,'kfold',5);
 % Options
 opt = statset('Display','iter','MaxIter',100);
 % Classifier
@@ -47,6 +47,7 @@ for i = 1:cp_labels_out.NumTestSets
     % selected at each step)
     % PERFORMS A 10-FOLD CV FOR EACH CANDIDATE FEATURE SUBSET
     [sel,hst] = sequentialfs(fun,trainSet,trainLabels,'cv',cp_labels_in,'options',opt,'keepout',[1:300,2000:2400]);
+    % SHOULD WE DO A KEEPOUT ???
     
     opt_validationError(i) = hst.Crit(end);
     nb_selectedFeatures(i) = find(hst.Crit == opt_validationError(i));
