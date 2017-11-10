@@ -162,7 +162,7 @@ model(bestModel_in)
 
 % %boxplots of distributions
 % figure('Color','w');
-% l = zeros(9,1);
+% l = zeros(15,1);
 % l(1:Kout) = 1;
 % l(Kout+1:2*Kout) = 2;
 % l(2*Kout+1:3*Kout) = 3;
