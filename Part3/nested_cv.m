@@ -114,7 +114,7 @@ l = zeros(15,1);
 l(1:Kout) = 1;
 l(Kout+1:2*Kout) = 2;
 l(2*Kout+1:3*Kout) = 3;
-boxplot([min_trainingerror_in; min_validationerror_in; errTest_out], l, 'Labels',{'Optimal Training','Optimal Validation','Test'});
+boxplot([min_trainingerror_in, min_validationerror_in, errTest_out], l, 'Labels',{'Optimal Training','Optimal Validation','Test'});
 box off;
 ylabel('Error');
 title('Boxplots of Error Distributions')
