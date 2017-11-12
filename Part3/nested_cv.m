@@ -33,7 +33,7 @@ for p = 1:Kout
     trainLabels_out = labels(trainIdx_out);
     testLabels_out = labels(testIdx_out);
     
-    % Rank of features for outer loop, on training set: v?rifier si on laisse fisher
+    % Rank of features for outer loop, on training set
     [orderedIndout, orderedPowerout] = rankfeat(features(trainIdx_out,:),labels(trainIdx_out),'fisher');
     
     % Inner partition on the train set of our outer-fold
