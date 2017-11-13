@@ -104,11 +104,11 @@ for p = 1:Kout
     % Best number of features according to inner cross-validation --> La
     % non plus
     mean_validationerror_in = mean(validationerr_in,1);
-    min_validationerror_in(p) = min(mean_validationerror_in); 
-    mean_trainingerror_in = mean(errTrain_in,2);
-    min_trainingerror_in(p) = min(mean_trainingerror_in);
-    nbfeature_minTesterror = find(mean_validationerror_in == min_validationerror_in(p));
-    nbfeature_minTesterror_in(p) = nbfeature_minTesterror(1); % Si plusieurs min egaux, je choisis le premier
+    min_validationerror_in(p) = min(min(mean_validationerror_in)); 
+    mean_trainingerror_in = mean(errTrain_in,1);
+    min_trainingerror_in(p) = min(min(mean_trainingerror_in));
+    [bestModel_PCA, bestModel_Rank] = find(mean_validationerror_in == min_validationerror_in(p));
+    [bestModel_PCA(p), bestModel_Rank(p)] = [bestModel_PCA(1), bestModel_Rank(1)]; % Si plusieurs min egaux, je choisis le premier
     
     % Construct our data matrix with the selected number of features on the
     % ranking done one the training set of the outer fold, and the selected
