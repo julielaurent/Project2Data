@@ -141,4 +141,4 @@ hold off;
 % features_normalized = zscore (features);
 % [coeff_n, score_n, variance_n] = pca(features_normalized, 'Centered', false); %A v?rifier centered data ou pas
 % 
-% pc_normalized = zscore(score); %score ou features*coeff ?
+% pca_normalized = zscore(score); %score ou features*coeff ?
