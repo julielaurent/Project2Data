@@ -75,6 +75,11 @@ line([44 44],[0 90],'Color','r','LineStyle','--');
 % Partition: K = 10
 cp_labels = cvpartition (labels,'kfold',10);
 
+% PCA 
+[coeff, score, variance] = pca(features, 'Centered', false); %A v?rifier centered data ou pas 
+%[coeff, score, variance] = pca(features(trainIdx,:), 'Centered', false);
+%score_uncentered = features*coeff;
+
 % Initialization of error vector
 N = 60;
 errClassDiagLinTest = zeros(N, cp_labels.NumTestSets);
@@ -93,15 +98,10 @@ for i = 1:cp_labels.NumTestSets
     testIdx = cp_labels.test(i);
     testLabels = labels(testIdx);
     
-    % PCA 
-    %[coeff, score, variance] = pca(features, 'Centered', false); %A v?rifier centered data ou pas % faudrait pas faire sur features mais sur train set, sinon what's the point a le mettre dans la boucle ?
-    [coeff, score, variance] = pca(features(trainIdx,:), 'Centered', false);
-    score_uncentered = features*coeff;
-    
    for j = 1:N
        
-        %features_model = [features_model, score(:,j)]; % je mettrai pas score parce que c'est centré, donc plutot: features(:,j) * coeff(j,:)
-        features_model = [features_model, score_uncentered(:,j)];
+        %features_model = [features_model, score(:,j)]; % je mettrai pas score parce que c'est centr?, donc plutot: features(:,j) * coeff(j,:)
+        features_model = [features_model, score(:,j)];
         
         trainSet = features_model(trainIdx,:);
         testSet = features_model(testIdx,:);
@@ -137,7 +137,7 @@ title('Error per fold with a PCA');
 box off;
 hold off;
 
-%% Normalization of data (a voir semaine pro)
+%% Normalization of data (a voir semaine pro) -> Normaliser avant tout?
 % features_normalized = zscore (features);
 % [coeff_n, score_n, variance_n] = pca(features_normalized, 'Centered', false); %A v?rifier centered data ou pas
 % 

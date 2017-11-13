@@ -7,7 +7,7 @@ load('dataset_ERP.mat');
 %% PCA and feature ranking, with fixed classifier
 % PResque fini mais 2-3 trucs que je sais pas faire
 
-N_rank = 60; % number of features tried
+%N_rank = 60; % number of features tried
 N_pca = 60;
 Kout = 5; %number of outer loop folds
 Kin = 10; %number of inner folds
@@ -92,19 +92,19 @@ for p = 1:Kout
        end      
     end
     
-    % Best number of PCs to retain according to inner cross-validation -->
-    % Je sais pas comment faire ici...
-    mean_validationerror_in_pca = mean(validationerr_in(:,:,?),2);
-    min_validationerror_in_pca(p) = min(mean_validationerror_in_pca);
-    mean_trainingerror_in_pca = mean(errTrain_in,2);
-    min_trainingerror_in_pca(p) = min(mean_trainingerror_in_pca);
-    nb_pc_minTesterror = find(mean_validationerror_in_pca == min_validationerror_in_pca(p));
-    nb_pc_minTesterror_in(p) = nb_pc_minTesterror(1); % Si plusieurs min egaux, je choisis le premier
+%     % Best number of PCs to retain according to inner cross-validation -->
+%     % Je sais pas comment faire ici...
+%     mean_validationerror_in_pca = mean(validationerr_in(:,:,?),1);
+%     min_validationerror_in_pca(p) = min(mean_validationerror_in_pca);
+%     mean_trainingerror_in_pca = mean(errTrain_in,2);
+%     min_trainingerror_in_pca(p) = min(mean_trainingerror_in_pca);
+%     nb_pc_minTesterror = find(mean_validationerror_in_pca == min_validationerror_in_pca(p));
+%     nb_pc_minTesterror_in(p) = nb_pc_minTesterror(1); % Si plusieurs min egaux, je choisis le premier
     
     % Best number of features according to inner cross-validation --> La
     % non plus
-    mean_validationerror_in = mean(validationerr_in,2);
-    min_validationerror_in(p) = min(mean_validationerror_in);
+    mean_validationerror_in = mean(validationerr_in,1);
+    min_validationerror_in(p) = min(mean_validationerror_in); 
     mean_trainingerror_in = mean(errTrain_in,2);
     min_trainingerror_in(p) = min(mean_trainingerror_in);
     nbfeature_minTesterror = find(mean_validationerror_in == min_validationerror_in(p));
