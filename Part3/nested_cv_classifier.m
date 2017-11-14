@@ -8,9 +8,8 @@ load('dataset_ERP.mat');
 %% k-fold cross-validation with Fischer
 
 Nfeature = 60; % number of features tried
-nModel = 0; 
 N = Nfeature * 3; %total number of models
-Kout = 5; %number of outer loop folds
+Kout = 10; %number of outer loop folds
 Kin = 10; %number of inner folds
 classifierType = {'diaglinear','linear','diagquadratic'};
 
@@ -47,7 +46,7 @@ for p = 1:Kout
     
     % Kin-fold 
     for i = 1:Kin
-         features_model_in = [];
+         nModel = 0; 
         
          % Attention,ici le cp_N.taining rend les INDICES des train samples
          % Quand trainIdx = 1 -> sample qui va dans le trainSet
@@ -69,6 +68,7 @@ for p = 1:Kout
          
          %Choice of classifier
          for type = 1:3
+            features_model_in = [];
             c = char(classifierType(type));
          
             % Test different models with this inner fold cv (one model is one
@@ -151,9 +151,7 @@ for p = 1:Kout
     % Calculus of class error on train set -> training error (1xKout)
     yTrain_out = predict(classifier_out,trainSet_out);
     errTrain_out(p) = classerror(trainLabels_out, yTrain_out);
-    
-    %%%%% Calculer la test error pour chaque classifiermais je sais pas
-    %%%%% comment faire
+   
     
 end
 
