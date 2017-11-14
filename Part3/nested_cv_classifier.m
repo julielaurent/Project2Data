@@ -21,7 +21,7 @@ cp_labels_out = cvpartition (labels,'kfold',Kout);
 % Initialization
  errTest_out = zeros(1,Kout); 
  errTrain_out = zeros(1,Kout); 
- validationerr_in = zeros(N,Kin); 
+ validationerr_in = zeros(N,Kin);   
  errTrain_in = zeros(N,Kin); 
  bestModel_in = zeros(1,Kout); 
  optimal_validationerror_in  = zeros(1,Kout); 

@@ -7,8 +7,7 @@ load('dataset_ERP.mat');
 %% PCA and feature ranking, with fixed classifier
 
 N_pca = 60; % Number of PCs 
-N = N_pca * N_pca; %total number of models
-Kout = 5; %number of outer loop folds
+Kout = 10; %number of outer loop folds
 Kin = 10; %number of inner folds
 
 model = struct('nb_pc',[],'nb_rank',[]);
@@ -19,16 +18,18 @@ cp_labels_out = cvpartition (labels,'kfold',Kout);
 % Initialization
  errTest_out = zeros(1,Kout); 
  errTrain_out = zeros(1,Kout); 
- validationerr_in = zeros(N,Kin); 
- errTrain_in = zeros(N,Kin); 
+ validationerr_in  = [];  % Attention, not (N_pca*N_pca,Kout)!!!! Car pas 60*60 mod?les
+ errTrain_in = [];   % Attention, not (N_pca*N_pca,Kout)!!!! Car pas 60*60 mod?les
  min_validationerror_in  = zeros(1,Kout); 
- min_trainingerror_in  = zeros(1,Kout); 
- bestModel_PCA  = zeros(1,Kout); 
+ min_trainingerror_in = zeros(1,Kout);
+ bestModel_PCA  = zeros(1,Kout);
  bestModel_Rank = zeros(1,Kout); 
 
 for p = 1:Kout
-    features_model_pca_out = [];
-    features_model_rank_out = [];
+    trainSet_out_pca = [];
+    testSet_out_pca = [];
+    trainSet_out = [];
+    testSet_out = [];
     
     % Attention,ici le cp_N.training rend les INDICES des train samples
     % Quand trainIdx = 1 -> sample qui va dans le trainSet
@@ -106,42 +107,38 @@ for p = 1:Kout
     mean_trainingerror_in = mean(errTrain_in,2);
     min_trainingerror_in(p) = min(min(mean_trainingerror_in));
     bestModel = find(mean_validationerror_in == min_validationerror_in(p));
-    bestModel_in = bestModel(1);
+    bestModel_in(p) = bestModel(1);
 
     % Extract best model data 
-    bestModel_PCA(p) = model(bestModel_in).nb_pc; 
-    bestModel_Rank(p) = model(bestModel_in).nb_rank; 
+    bestModel_PCA(p) = model(bestModel_in(p)).nb_pc; 
+    bestModel_Rank(p) = model(bestModel_in(p)).nb_rank; 
     
-    % Pas encore fait ? partir de la
     
     % Construct our data matrix with the selected number of features on the
     % ranking done one the training set of the outer fold, and the selected
     % number of PC
-%     for j = 1:bestModel_PCA(p)
-%        features_model_pca_out = [features_model_pca_out, score_out(:,j)];
-%     end
-%     
-%     % Rank of PCs for outer loop, on training set
-%     [orderedIndout, orderedPowerout] = rankfeat(features_model_pca_out(trainIdx_out,:),labels(trainIdx_out),'fisher');
-%     
-%     for j = 1:bestModel_Rank(p)
-%        features_model_rank_out = [features_model_rank_out, features_model_pca_out(:,orderedIndout(j))];
-%     end
-%    
-%      
-%     % Select the train and test data for the outer fold
-%     trainSet_out = features_model_rank_out(trainIdx_out,:); 
-%     testSet_out = features_model_rank_out(testIdx_out,:);
-%        
-%     % Classifier construction
-%     DiagLinclassifier_out = fitcdiscr(trainSet_out,trainLabels_out,'discrimtype', 'diagLinear');
-% 
-%     % Calculus of class error on test set -> testing error (1xKout)
-%     yTest_out = predict(DiagLinclassifier_out,testSet_out);
-%     errTest_out(p) = classerror(testLabels_out, yTest_out);
-%     
-%     % Calculus of class error on train set -> training error (1xKout)
-%     yTrain_out = predict(DiagLinclassifier_out,trainSet_out);
-%     errTrain_out(p) = classerror(trainLabels_out, yTrain_out);
+    for j = 1:bestModel_PCA(p)
+       trainSet_out_pca  = [trainSet_out_pca, train_out(:,j)];
+       testSet_out_pca  = [testSet_out_pca, test_out(:,j)];
+    end
+    
+    % Rank of PCs for outer loop, on training set
+    [orderedIndout, orderedPowerout] = rankfeat(trainSet_out_pca,labels(trainIdx_out),'fisher');
+    
+    for j = 1:bestModel_Rank(p)
+       trainSet_out = [trainSet_out, trainSet_out_pca(:,orderedIndout(j))];
+       testSet_out = [testSet_out, testSet_out_pca(:,orderedIndout(j))];
+    end
+       
+    % Classifier construction
+    DiagLinclassifier_out = fitcdiscr(trainSet_out,trainLabels_out,'discrimtype', 'diagLinear');
+
+    % Calculus of class error on test set -> testing error (1xKout)
+    yTest_out = predict(DiagLinclassifier_out,testSet_out);
+    errTest_out(p) = classerror(testLabels_out, yTest_out);
+    
+    % Calculus of class error on train set -> training error (1xKout)
+    yTrain_out = predict(DiagLinclassifier_out,trainSet_out);
+    errTrain_out(p) = classerror(trainLabels_out, yTrain_out);
 
 end
