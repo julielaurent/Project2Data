@@ -129,7 +129,6 @@ for p = 1:Kout
     % Rank of PCs for outer loop, on training set
     [orderedIndout, orderedPowerout] = rankfeat(trainSet_out_pca,trainLabels_out,'fisher');
     
-    %Pb avec trainSet pas remis a 0 ? Donner autre nom ?
     for j = 1:bestModel_Rank(p)
        trainSet_out = [trainSet_out, trainSet_out_pca(:,orderedIndout(j))];
        testSet_out = [testSet_out, testSet_out_pca(:,orderedIndout(j))];
