@@ -19,7 +19,8 @@ errClassDiagLinTrain = zeros(N,cp_labels.NumTestSets);
 for i = 1:cp_labels.NumTestSets
     
     % Initialisation
-    features_model = [];
+    trainSet = [];
+    testSet = [];
     
     % Attention,ici le cp_N.taining rend les INDICES des train samples
     % Quand trainIdx = 1 -> sample qui va dans le trainSet
@@ -27,15 +28,15 @@ for i = 1:cp_labels.NumTestSets
     trainLabels = labels(trainIdx);
     testIdx = cp_labels.test(i);
     testLabels = labels(testIdx);
+    train = features(trainIdx,:);
+    test = features(testIdx,:);
     
     % Rank of features on training set
-    [orderedInd, orderedPower] = rankfeat(features(trainIdx,:),labels(trainIdx),'fisher');
+    [orderedInd, orderedPower] = rankfeat(train,trainLabels,'fisher');
         
    for j = 1:N
-        features_model = [features_model, features(:,orderedInd(j))];
-
-        trainSet = features_model(trainIdx,:);
-        testSet = features_model(testIdx,:);
+        trainSet = [trainSet, train(:,orderedInd(j))];
+        testSet = [testSet, test(:,orderedInd(j))];
          
         % Classifier construction
         DiagLinclassifier = fitcdiscr(trainSet,trainLabels,'discrimtype', 'diagLinear');
@@ -78,7 +79,8 @@ hold off;
 %% k-fold cross-validation with Correlation of Pearson
 
 % Partition: K = 10
-cp_labels = cvpartition (labels,'kfold',10);
+% ATTENTION NE PAS REFAIRE CA ICI, SINON LES DEUX METHODES NE SONT PAS APPLIQUES AUX MEMES FOLDS
+%cp_labels = cvpartition (labels,'kfold',10);
 
 % Initialization of error vector
 N = 60;
@@ -89,7 +91,8 @@ errClassDiagLinTrain = zeros(N,cp_labels.NumTestSets);
 for i = 1:cp_labels.NumTestSets
     
     % Initialisation
-    features_model = [];
+    trainSet = [];
+    testSet = [];
     
     % Attention,ici le cp_N.taining rend les INDICES des train samples
     % Quand trainIdx = 1 -> sample qui va dans le trainSet
@@ -97,15 +100,15 @@ for i = 1:cp_labels.NumTestSets
     trainLabels = labels(trainIdx);
     testIdx = cp_labels.test(i);
     testLabels = labels(testIdx);
+    train = features(trainIdx,:);
+    test = features(testIdx,:);
     
     % Rank of features on training set
-    [orderedInd, orderedPower] = rankfeat(features(trainIdx,:),labels(trainIdx),'corr');
+    [orderedInd, orderedPower] = rankfeat(train,trainLabels,'corr');
         
    for j = 1:N
-        features_model = [features_model, features(:,orderedInd(j))];
-
-        trainSet = features_model(trainIdx,:);
-        testSet = features_model(testIdx,:);
+        trainSet = [trainSet, train(:,orderedInd(j))];
+        testSet = [testSet, test(:,orderedInd(j))];
          
         % Classifier construction
         DiagLinclassifier = fitcdiscr(trainSet,trainLabels,'discrimtype', 'diagLinear');
@@ -149,7 +152,8 @@ hold off;
 %% Random classifier
 
 % k-fold partition of our data
-cp_labels = cvpartition (labels,'kfold',10);
+% ATTENTION NE PAS REFAIRE CA ICI, SINON LES DEUX METHODES NE SONT PAS APPLIQUES AUX MEMES FOLDS
+%cp_labels = cvpartition (labels,'kfold',10);
 
 % Initialization 
 R = 1000; % Number of repetitions
@@ -162,7 +166,8 @@ for x = 1:R
     for i = 1:cp_labels.NumTestSets
       
         % Initialization
-        features_model = [];
+        trainSet = [];
+        testSet = [];
     
          % Attention,ici le cp_N.taining rend les INDICES des train samples
          % Quand trainIdx = 1 -> sample qui va dans le trainSet
@@ -170,13 +175,16 @@ for x = 1:R
          trainLabels = labels(trainIdx);
          testIdx = cp_labels.test(i);
          testLabels = labels(testIdx);
+         train = features(trainIdx,:);
+         test = features(testIdx,:);
         
          % Rank of features on training set: v?rifier si on laisse fisher
-         [orderedInd, orderedPower] = rankfeat(features(trainIdx,:),labels(trainIdx),'fisher');
+         [orderedInd, orderedPower] = rankfeat(train,trainLabels,'fisher');
         
         for j = 1:N
-             features_model = [features_model features(:,orderedInd(j))];   
-
+             trainSet = [trainSet train(:,orderedInd(j))];   
+             testSet = [testSet test(:,orderedInd(j))]; 
+             
              % Classifier construction --> vector 648X1 of random labels (0 or 1)
              Randomlabel = round(rand([648 1]));
                       
@@ -185,8 +193,8 @@ for x = 1:R
              RandomlabelTrain = Randomlabel(trainIdx);
         
              % Create our train and test set of inner loop for this model
-             trainSet = features_model(trainIdx,:);
-             testSet = features_model(testIdx,:);
+%              trainSet = features_model(trainIdx,:);
+%              testSet = features_model(testIdx,:);
         
              % Calculus of class error on test set -> testing error (NxK)
              errClassRandomTest(j,i) = classerror(testLabels, RandomlabelTest);

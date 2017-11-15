@@ -8,7 +8,7 @@ load('dataset_ERP.mat');
 %% k-fold cross-validation with Fischer
 
 N = 60; %number of models tried
-Kout = 5; %number of outer loop folds
+Kout = 10; %number of outer loop folds
 Kin = 10; %number of inner folds
 
 % Outer partition
@@ -24,7 +24,9 @@ cp_labels_out = cvpartition (labels,'kfold',Kout);
  min_trainingerror_in  = zeros(1,Kout); 
 
 for p = 1:Kout
-    features_model_out = [];
+    %features_model_out = [];
+    trainSet_out = [];
+    testSet_out = [];
     
     % Attention,ici le cp_N.training rend les INDICES des train samples
     % Quand trainIdx = 1 -> sample qui va dans le trainSet
@@ -32,34 +34,46 @@ for p = 1:Kout
     testIdx_out = cp_labels_out.test(p);
     trainLabels_out = labels(trainIdx_out);
     testLabels_out = labels(testIdx_out);
+    % Ajouté
+    train_out = features(trainIdx_out,:);
+    test_out = features(testIdx_out,:);
     
     % Rank of features for outer loop, on training set
-    [orderedIndout, orderedPowerout] = rankfeat(features(trainIdx_out,:),labels(trainIdx_out),'fisher');
+    [orderedIndout, orderedPowerout] = rankfeat(train_out,trainLabels_out,'fisher');
     
     % Inner partition on the train set of our outer-fold
     cp_labels_in = cvpartition (trainLabels_out,'kfold',Kin);
     
     % Kin-fold 
     for i = 1:Kin
-         features_model_in = [];
-        
+         %features_model_in = [];
+         trainSet_in = [];
+         testSet_in = [];
+         
          % Attention,ici le cp_N.taining rend les INDICES des train samples
          % Quand trainIdx = 1 -> sample qui va dans le trainSet
          trainIdx_in = cp_labels_in.training(i);
          trainLabels_in = trainLabels_out(trainIdx_in);
          testIdx_in = cp_labels_in.test(i);
          testLabels_in = trainLabels_out(testIdx_in);
+         % rajouté
+         train_in = train_out(trainIdx_in,:);
+         test_in = train_out(testIdx_in,:);
         
          % Rank of features for inner loop, on training set: v?rifier si on laisse fisher
-         [orderedIndin, orderedPowerin] = rankfeat(features(trainIdx_in,:),labels(trainIdx_in),'fisher');
+         % Ca plutot ?
+         [orderedIndin, orderedPowerin] = rankfeat(train_in,trainLabels_in,'fisher');
+         %[orderedIndin, orderedPowerin] = rankfeat(features(trainIdx_in,:),labels(trainIdx_in),'fisher');
          
          % Test different models with this inner fold cv
           for j = 1:N
-            features_model_in = [features_model_in, features(trainIdx_out,orderedIndin(j))]; 
+            trainSet_in = [trainSet_in, train_in(:,orderedIndin(j))]; 
+            testSet_in = [testSet_in, test_in(:,orderedIndin(j))];
+            %features_model_in = [features_model_in, features(trainIdx_out,orderedIndin(j))]; 
 
             % Construction of train and test set for inner loop
-            trainSet_in = features_model_in(trainIdx_in,:);
-            testSet_in = features_model_in(testIdx_in,:);
+            %trainSet_in = features_model_in(trainIdx_in,:);
+            %testSet_in = features_model_in(testIdx_in,:);
        
             % Classifier construction
             DiagLinclassifier_in = fitcdiscr(trainSet_in,trainLabels_in,'discrimtype', 'diagLinear');
@@ -85,12 +99,14 @@ for p = 1:Kout
     % Construct our data matrix with the selected number of features on the
     % ranking done one the training set of the outer fold
     for j = 1:nbfeature_minTesterror_in(p)
-       features_model_out = [features_model_out, features(:,orderedIndout(j))];
+       trainSet_out = [trainSet_out, train_out(:,orderedIndout(j))];
+       testSet_out = [testSet_out, test_out(:,orderedIndout(j))];
+        %features_model_out = [features_model_out, features(:,orderedIndout(j))];
     end
      
     % Select the train and test data for the outer fold
-    trainSet_out = features_model_out(trainIdx_out,:); 
-    testSet_out = features_model_out(testIdx_out,:);
+    %trainSet_out = features_model_out(trainIdx_out,:); 
+    %testSet_out = features_model_out(testIdx_out,:);
        
     % Classifier construction
     DiagLinclassifier_out = fitcdiscr(trainSet_out,trainLabels_out,'discrimtype', 'diagLinear');

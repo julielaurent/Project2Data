@@ -1,13 +1,11 @@
+close all;
+clear all;
+clc;
+
+load('dataset_ERP.mat');
+
 %% Nested cross-validation with forward feature selection and classifier selection
 
-size_labels = size(labels);
-
-% Total number of samples
-N = size_labels(1);
-
-Nfeature = 60; % number of features tried
-nModel = 0; 
-N = Nfeature * 3; %total number of models
 Kout = 5; %number of outer loop folds
 Kin = 10; %number of inner folds
 
@@ -16,98 +14,77 @@ opt = statset('Display','iter','MaxIter',100);
 
 classifierType = {'diaglinear','linear','diagquadratic'};
 
-model = struct('classifier',[],'number_of_features',[]);
-
 % Outer partition
 cp_labels_out = cvpartition (labels,'kfold',Kout);
 
 % Initialization
  errTest_out = zeros(1,Kout); 
  errTrain_out = zeros(1,Kout); 
- validationerr_in = zeros(N,Kin); 
- errTrain_in = zeros(N,Kin); 
- bestModel_in = zeros(1,Kout); 
- optimal_validationerror_in  = zeros(1,Kout); 
- optimal_trainingerror_in  = zeros(1,Kout); 
+ errClassTest_in = zeros(cp_labels_out.NumTestSets,1);
+ opt_validationErrorDL = zeros(cp_labels_out.NumTestSets,1);
+ opt_validationErrorL = zeros(cp_labels_out.NumTestSets,1);
+ opt_validationErrorDQ = zeros(cp_labels_out.NumTestSets,1);
+ nb_selectedFeaturesDL = zeros(cp_labels_out.NumTestSets,1);
+ nb_selectedFeaturesL = zeros(cp_labels_out.NumTestSets,1);
+ nb_selectedFeaturesDQ = zeros(cp_labels_out.NumTestSets,1);
  
-
+ minTestErr = zeros(cp_labels_out.NumTestSets,1);
+ bestModelClassifier = zeros(cp_labels_out.NumTestSets,1);
+ bestNbFeatures = zeros(cp_labels_out.NumTestSets,1);
+ bestSelectedFeatures = zeros(cp_labels_out.NumTestSets,1);
+ 
 for p = 1:Kout
     
     % Attention,ici le cp_N.training rend les INDICES des train samples
     % Quand trainIdx = 1 -> sample qui va dans le trainSet
-    trainIdx_out = cp_labels_out.training(p);
-    testIdx_out = cp_labels_out.test(p);
-    trainLabels_out = labels(trainIdx_out);
-    testLabels_out = labels(testIdx_out);
-    
-    
-    %Choice of classifier
-    for type = 1:3
-        c = char(classifierType(type));
-        
-        % Inner partition on the train set of our outer-fold --> DEDANS ou
-        % DEHORS???
-        cp_labels_in = cvpartition (trainLabels_out,'kfold',Kin);
-        
-         % defines the criterion used to select features and to determine when to stop
-            % si j'ai bien compris,x -> set, y -> labels, t -> test/validation, T -> train
-         fun = @(xT,yT,xt,yt) length(yt)*(classerror(yt,predict(fitcdiscr(xT,yT,'discrimtype',c),xt)));
-        
-        % sel is logical vector indicating which features are finally chosen
-        % hst is a scalar strucure with the fiels Crit (vector containing criterion
-        % values at each step) and In (logical matrix -> row indicates feature
-        % selected at each step)
-        % PERFORMS A 10-FOLD CV FOR EACH CANDIDATE FEATURE SUBSET
-        [sel,hst] = sequentialfs(fun,trainSet_out,trainLabels_out,'cv',cp_labels_in,'options',opt,'keepout',[1:300,2000:2400]);
-        % SHOULD WE DO A KEEPOUT ???
+    trainIdx = cp_labels_out.training(p);
+    testIdx = cp_labels_out.test(p);
+    trainSet = features(trainIdx,:);
+    testSet = features(testIdx,:);
+    trainLabels = labels(trainIdx);
+    testLabels = labels(testIdx);
 
-        opt_validationError(type,p) = hst.Crit(end);
-        nb_selectedFeatures(type,p) = find(hst.Crit == opt_validationError(type,p));
-        trainSet_selectedFeatures = trainSet(:,sel);
-        testSet_selectedFeatures = testSet(:,sel);
-        selectedFeatures = find(sel);
+    cp_labels_in = cvpartition (trainLabels,'kfold',Kin);
+         
+    funDL = @(xT,yT,xt,yt) length(yt)*(classerror(yt,predict(fitcdiscr(xT,yT,'discrimtype','diaglinear'),xt)));
+    [selDL,hstDL] = sequentialfs(funDL,trainSet,trainLabels,'cv',cp_labels_in,'options',opt,'keepout',[1:300,2000:2400]);
+    opt_validationErrorDL(p) = hstDL.Crit(end);
+    nb_selectedFeaturesDL(p) = find(hstDL.Crit == opt_validationErrorDL(p));
+              
+    funL = @(xT,yT,xt,yt) length(yt)*(classerror(yt,predict(fitcdiscr(xT,yT,'discrimtype','linear'),xt)));
+    [selL,hstL] = sequentialfs(funL,trainSet,trainLabels,'cv',cp_labels_in,'options',opt,'keepout',[1:300,2000:2400]);
+    opt_validationErrorL(p) = hstL.Crit(end);       
+    nb_selectedFeaturesL(p) = find(hstL.Crit == opt_validationErrorL(p));
     
-        % Calculus of class errors
-        DiagLinclassifier = fitcdiscr(trainSet_selectedFeatures,trainLabels,'discrimtype', c);
-        DiagLin_y = predict(DiagLinclassifier,testSet_selectedFeatures);
-        errClassDiagLin(type,p) = classerror(testLabels, DiagLin_y);
+    funDQ = @(xT,yT,xt,yt) length(yt)*(classerror(yt,predict(fitcdiscr(xT,yT,'discrimtype','diagquadratic'),xt)));
+    [selDQ,hstDQ] = sequentialfs(funDQ,trainSet,trainLabels,'cv',cp_labels_in,'options',opt,'keepout',[1:300,2000:2400]);    
+    opt_validationErrorDQ(p) = hstDQ.Crit(end);
+    nb_selectedFeaturesDQ(p) = find(hstDQ.Crit == opt_validationErrorDQ(p));
+    
+    min_optimalValErr = min([opt_validationErrorDL(p) opt_validationErrorL(p) opt_validationErrorDQ(p)]);
+    bestClassifierType(p) = find([opt_validationErrorDL(p) opt_validationErrorL(p) opt_validationErrorDQ(p)] == min_optimalValErr);
+    
+    if bestClassifierType(p) == 1
+        sel = selDL;
+        bestNbFeatures(p) = nb_selectedFeaturesDL(p);
+    elseif bestClassifierType(p) == 2
+        sel = selL;
+        bestNbFeatures(p) = nb_selectedFeaturesL(p);
+    elseif bestClassifierType(p) == 3
+        sel = selDQ;
+        bestNbFeatures(p) = nb_selectedFeaturesDQ(p);
     end
     
+    %bestSelectedFeatures(p) = find(sel);
+    trainSet_selectedFeatures = trainSet_out(:,sel);
+    testSet_selectedFeatures = testSet_out(:,sel);
     
-    % J'ai pas regard? ? partir d'ici ----------------------------------
-    % Best number of features according to inner cross-validation
-    mean_validationerror_in = mean(validationerr_in,2);
-    optimal_validationerror_in(p) = min(mean_validationerror_in);
-    mean_trainingerror_in = mean(errTrain_in,2);
-    optimal_trainingerror_in(p) = min(mean_trainingerror_in);
-    bestModelNumber = find(mean_validationerror_in == optimal_validationerror_in(p));
-    bestModel_in(p) = bestModelNumber(1); % Si plusieurs min egaux, je choisis le premier
-
-    % Extract best model data 
-    bestModelClassifier = model(bestModel_in(p)).classifier; 
+    classifier = fitcdiscr(trainSet_selectedFeatures,trainLabels,'discrimtype', char(classifierType(bestClassifierType(p))));
     
-    % Construct our data matrix with the selected number of features on the
-    % ranking done one the training set of the outer fold
-    for j = 1:model(bestModel_in(p)).number_of_features
-       features_model_out = [features_model_out, features(:,orderedIndout(j))];
-    end
-     
-    % Select the train and test data for the outer fold
-    trainSet_out = features_model_out(trainIdx_out,:); 
-    testSet_out = features_model_out(testIdx_out,:);
-       
-    % Classifier construction
-    classifier_out = fitcdiscr(trainSet_out,trainLabels_out,'discrimtype', bestModelClassifier);
-
-    % Calculus of class error on test set -> testing error (1xKout)
-    yTest_out = predict(classifier_out,testSet_out);
-    errTest_out(p) = classerror(testLabels_out, yTest_out);
+    yTest_out = predict(classifier,testSet_selectedFeatures);
+    errTest_out(p) = classerror(testLabels, yTest_out);
     
-    % Calculus of class error on train set -> training error (1xKout)
-    yTrain_out = predict(classifier_out,trainSet_out);
-    errTrain_out(p) = classerror(trainLabels_out, yTrain_out);
+    yTrain_out = predict(classifier,trainSet_selectedFeatures);
+    errTrain_out(p) = classerror(trainLabels, y_Train_out);
     
 end
-
-%Calculus of best model characteristics
-model(bestModel_in)

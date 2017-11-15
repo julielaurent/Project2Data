@@ -63,7 +63,8 @@ for p = 1:Kout
         % PCA
         [train_in, mu_in, sigma_in] = zscore(features(trainIdx_in,:));
         [coeff_in, score_in, variance_in] = pca(train_in);
-        test_in = ((features(testIdx_in,:)' - mu_out')./sigma_out')'* coeff_out; % A comparer avec d'autres groupes
+        % mu_in et sigma_in et coeff_in
+        test_in = ((features(testIdx_in,:)' - mu_in')./sigma_in')'* coeff_in; % A comparer avec d'autres groupes
         
        for j = 1:N_pca
            % Initialization
@@ -75,6 +76,8 @@ for p = 1:Kout
             testSet_in = [testSet_in, test_in(:,j)];
 
             % Rank of features for inner loop, on training set
+            % au lieu de labels(trainIdx_in), plutot trainLabels_in =
+            % trainLabels_out(trainIdx_in) ??
             [orderedIndin, orderedPowerin] = rankfeat(trainSet_in,labels(trainIdx_in),'fisher');
 
             for k = 1:j 
