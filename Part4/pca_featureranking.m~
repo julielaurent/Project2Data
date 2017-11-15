@@ -60,7 +60,7 @@ for p = 1:Kout
          testIdx_in = cp_labels_in.test(i);
          testLabels_in = trainLabels_out(testIdx_in);
 
-        % PCA 
+        % PCA --> J'ai fais les changements ICI 
         [train_in, mu_in, sigma_in] = zscore(train_out(trainIdx_in,:));
         [coeff_in, train_in_pca, variance_in] = pca(train_in); % score_in = train_in_pca
         test_in_pca = ((test_out(testIdx_in,:)' - mu_in')./sigma_in')'* coeff_in; % A comparer avec d'autres groupes
@@ -75,7 +75,9 @@ for p = 1:Kout
             testSet_in = [testSet_in, test_in_pca(:,j)];
 
             % Rank of features for inner loop, on training set
-            [orderedIndin, orderedPowerin] = rankfeat(trainSet_in,trainLabels_in,'fisher');
+            % au lieu de labels(trainIdx_in), plutot trainLabels_in =
+            % trainLabels_out(trainIdx_in) ??
+            [orderedIndin, orderedPowerin] = rankfeat(trainSet_in,labels(trainIdx_in),'fisher');
 
             for k = 1:j 
                 nModel = nModel + 1;
@@ -118,12 +120,12 @@ for p = 1:Kout
     % ranking done one the training set of the outer fold, and the selected
     % number of PC
     for j = 1:bestModel_PCA(p)
-       trainSet_out_pca  = [trainSet_out_pca, train_out_pca(:,j)];
-       testSet_out_pca  = [testSet_out_pca, test_out_pca(:,j)];
+       trainSet_out_pca  = [trainSet_out_pca, train_out(:,j)];
+       testSet_out_pca  = [testSet_out_pca, test_out(:,j)];
     end
     
     % Rank of PCs for outer loop, on training set
-    [orderedIndout, orderedPowerout] = rankfeat(trainSet_out_pca,trainLabels_out,'fisher');
+    [orderedIndout, orderedPowerout] = rankfeat(trainSet_out_pca,labels(trainIdx_out),'fisher');
     
     for j = 1:bestModel_Rank(p)
        trainSet_out = [trainSet_out, trainSet_out_pca(:,orderedIndout(j))];

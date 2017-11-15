@@ -8,7 +8,7 @@ size_labels = size(labels);
 % Total number of samples
 N = size_labels(1);
 % CV partition
-cp_labels_out = cvpartition (labels,'kfold',5);
+cp_labels_out = cvpartition (labels,'kfold',10);
 % Options
 opt = statset('Display','iter','MaxIter',100);
 % Classifier

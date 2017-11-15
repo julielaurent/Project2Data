@@ -67,8 +67,8 @@ load('dataset_ERP.mat');
 % axis([0 648 0 100]);
 % line([0 648], [90 90],'Color','r');
 % line([44 44],[0 90],'Color','r','LineStyle','--');
-
-% 44 features explain 90.1966 % of the variances
+% 
+% %44 features explain 90.1966 % of the variances
 
 %% Cross-validation with PCA 
 
