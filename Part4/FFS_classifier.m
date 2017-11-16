@@ -6,7 +6,7 @@ load('dataset_ERP.mat');
 
 %% Nested cross-validation with forward feature selection and classifier selection
 
-Kout = 5; %number of outer loop folds
+Kout = 10; %number of outer loop folds
 Kin = 10; %number of inner folds
 
 % Options
