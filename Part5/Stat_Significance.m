@@ -14,20 +14,30 @@ alpha = 0.05;
 significant = [1,N];
 
 for i:N
-    
-% h = 0 -> null hypothesis not rejected -> come from same distribution
-[h,p] = ttest(mean_test_error_out(i), random_level);
 
-% Determine if the p-value is significant
-if p <= alpha
-    significant(i) = 1; %means that it is significant --> the null hypothesis is rejected
-elseif 
-    significant(i) = 0; %-->the null hypothesis is not rejected --> not significant
-end
+standard_error = (test_error_out - mean_test_error_out(i))/std(test_error_out);
 
+%Boxplot to verify if the data are normally distributed
 figure('Color','w');
 boxplot(test_error_out);
 title('Boxplot of Outer folds test error values')
 box off;
+
+%Kolmogorov_smirnov test to check if data are normally distributed
+% s = 0 -> null hypothesis not rejected -> come from same distribution
+s = kstest(standard_error);
+
+if s = 0
+    [v, w] = signrank(standard_error, random_level);
+elseif s = 1
+    % h = 0 -> null hypothesis not rejected -> come from same distribution
+[h,p] = ttest(mean_test_error_out(i), random_level);
+% Determine if the p-value is significant
+        if p <= alpha
+            significant(i) = 1; %means that it is significant --> the null hypothesis is rejected
+        elseif 
+            significant(i) = 0; %-->the null hypothesis is not rejected --> not significant
+        end
+end
 
 end

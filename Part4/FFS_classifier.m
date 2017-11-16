@@ -78,8 +78,8 @@ for p = 1:Kout
         bestClassifierType(p) = 3;
     end
     
-    trainSet_selectedFeatures = trainSet_out(:,sel);
-    testSet_selectedFeatures = testSet_out(:,sel);
+    trainSet_selectedFeatures = trainSet(:,sel);
+    testSet_selectedFeatures = testSet(:,sel);
     
     classifier = fitcdiscr(trainSet_selectedFeatures,trainLabels,'discrimtype', char(classifierType(bestClassifierType(p))));
     
