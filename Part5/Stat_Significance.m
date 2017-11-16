@@ -8,7 +8,9 @@ load('dataset_ERP.mat');
 
 N = 5; %number of mean_test_error_out that we have
 test_error_out = []; %Outer fold's test error values (load from workspace)
-mean_test_error_out = [0.1 0.2 0.3 0.4 0.5]; %Mean test errors across outer folds (found before)
+% Feature selection (Fisher) = 0.2013
+% Feature selection (Feature ranking) + classifier choice = 0.2103
+mean_test_error_out = [0.2013 0.2103 0.2011 0.2450]; %Mean test errors across outer folds (found before)
 random_level = 0.5; %Random level of 50% (2-class problem)
 alpha = 0.05;
 significant = zeros(1,N);
