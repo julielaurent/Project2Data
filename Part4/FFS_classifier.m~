@@ -65,19 +65,25 @@ for p = 1:Kout
     min_optimalValErr = min([opt_validationErrorDL(p) opt_validationErrorL(p) opt_validationErrorDQ(p)]);
     
     if min_optimalValErr == opt_validationErrorDL(p)
-        sel = selDL;
-        bestNbFeatures(p) = nb_selectedFeaturesDL(p);
-        bestClassifierType(p) = 1;
+        bestClassifierType(p) = find(opt_validationErrorDL(p) == min_optimalValErr);
     elseif min_optimalValErr == opt_validationErrorL(p)
-        sel = selL;
-        bestNbFeatures(p) = nb_selectedFeaturesL(p);
-        bestClassifierType(p) = 2;
+        bestClassifierType(p) = find(opt_validationErrorL(p) == min_optimalValErr);
     elseif min_optimalValErr == opt_validationErrorDQ(p)
-        sel = selDQ;
-        bestNbFeatures(p) = nb_selectedFeaturesDQ(p);
-        bestClassifierType(p) = 3;
+        bestClassifierType(p) = find(opt_validationErrorDQ(p) == min_optimalValErr);
     end
     
+    if bestClassifierType(p) == 1
+        sel = selDL;
+        bestNbFeatures(p) = nb_selectedFeaturesDL(p);
+    elseif bestClassifierType(p) == 2
+        sel = selL;
+        bestNbFeatures(p) = nb_selectedFeaturesL(p);
+    elseif bestClassifierType(p) == 3
+        sel = selDQ;
+        bestNbFeatures(p) = nb_selectedFeaturesDQ(p);
+    end
+    
+    %bestSelectedFeatures(p) = find(sel);
     trainSet_selectedFeatures = trainSet_out(:,sel);
     testSet_selectedFeatures = testSet_out(:,sel);
     
