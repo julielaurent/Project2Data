@@ -87,6 +87,6 @@ for p = 1:Kout
     errTest_out(p) = classerror(testLabels, yTest_out);
     
     yTrain_out = predict(classifier,trainSet_selectedFeatures);
-    errTrain_out(p) = classerror(trainLabels, y_Train_out);
+    errTrain_out(p) = classerror(trainLabels, yTrain_out);
     
 end
