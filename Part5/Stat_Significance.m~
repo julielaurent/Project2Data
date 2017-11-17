@@ -13,33 +13,34 @@ test_error_out = [0.1652 0.2213 0.0588 0.2308 0.0577 0.2692 0.1538 0.3365 0.2115
 % test-error-out (in loop for --> i = 1)
 % Feature selection (Feature ranking) + Classifier choice = 0.2103 --> 2nd
 % line of test_error_out (in loop for --> i = 2)
-% Feature Selection (FFS) = 0.2011 --> 3rd line of test-error-out (in loop for --> i = 3)
+% Feature Selection (FFS) = 0.2011 --> 3rd line of test-error-out
 % Feature Engineering (PCA) + Feature Selection (Fisher ranking) = 0.2450
-% --> 4th line of test-error-out (in loop for --> i = 4)
+% --> 4th line of test-error-out
 % Feature Selection (FFS) + Classifier choice = 0.1691 --> 5th line of
-% test-error-out (in loop for --> i = 5)
+% test-error-out
 
-mean_test_error_out = [0.2013 0.2103 0.2011 0.2450 0.1691]; %Mean test errors across outer folds
+mean_test_error_out = [0.2013 0.2103 0.2011 0.2450 0.1691]; %Mean test errors across outer folds (found before)
+>>>>>>> 90f8697697ebdf94121c2506ca8eb0f3b2b10750
 random_level = 0.5; %Random level of 50% (2-class problem)
 alpha = 0.05;
 significant = zeros(1,N);
 
 for i = 1:N
 
-standardized_error = (test_error_out(i,:) - mean_test_error_out(i))/std(test_error_out(i,:));
+standard_error = (test_error_out(i,:) - mean_test_error_out(i))/std(test_error_out(i,;));
 
-%Histogram to verify if the data are normally distributed
+%Boxplot to verify if the data are normally distributed
 figure('Color','w');
-histogram(test_error_out(i,:));
-title('Histogram of Outer folds test error values')
+boxplot(test_error_out);
+title('Boxplot of Outer folds test error values')
 box off;
 
 %Kolmogorov_smirnov test to check if data are normally distributed
-s = kstest(standardized_error);
+s = kstest(standard_error);
 
 if s == 0 % null hypothesis not rejected -> come from standard normal distribution
      % h = 0 -> null hypothesis not rejected -> come from same distribution
-[h,p] = ttest(test_error_out(i,:), random_level);
+[h,p] = ttest(mean_test_error_out(i), random_level);
 % Determine if the p-value is significant
         if p <= alpha
             significant(i) = 1; % null hypothesis rejected --> significant
