@@ -8,7 +8,7 @@ load('dataset_ERP.mat');
 
 N = 5; %number of mean_test_error_out that we have
 test_error_out = [0.1652 0.2213 0.0588 0.2308 0.0577 0.2692 0.1538 0.3365 0.2115 0.3084; 0.1938 0.2633 0.2409 0.1538 0.2115 0.2692 0.2019 0.2404 0.1058 0.2225; 0.3273 0.2115 0.2990 0.1635 0.2115 0.1923 0.1923 0.2500 0.0673 0.0965; 0.2021 0.2857 0.2500 0.2692 0.1635 0.2885 0.2692 0.1923 0.3462 0.1833; 0.1833 0.1758 0.0812 0.2596 0.1442 0.1538 0.2019 0.1442 0.1538 0.1931]; %Outer fold's test error values
-models = {'Fischer Ranking', 'Fischer Ranking + Classifier', 'FFS', 'PCA + Fischer Ranking', 'FFS + Classifier'};
+models = {'Fisher Ranking', 'Fisher Ranking + Classifier', 'FFS', 'PCA + Fisher Ranking', 'FFS + Classifier'};
 
 % Feature selection (Fisher ranking) = 0.2013 --> 1rst line of
 % test-error-out (in loop for --> i = 1)
