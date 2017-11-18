@@ -24,7 +24,6 @@ cp_labels_out = cvpartition (labels,'kfold',Kout);
  min_trainingerror_in  = zeros(1,Kout); 
 
 for p = 1:Kout
-    %features_model_out = [];
     trainSet_out = [];
     testSet_out = [];
     
@@ -34,7 +33,6 @@ for p = 1:Kout
     testIdx_out = cp_labels_out.test(p);
     trainLabels_out = labels(trainIdx_out);
     testLabels_out = labels(testIdx_out);
-    % Ajouté
     train_out = features(trainIdx_out,:);
     test_out = features(testIdx_out,:);
     
@@ -46,7 +44,6 @@ for p = 1:Kout
     
     % Kin-fold 
     for i = 1:Kin
-         %features_model_in = [];
          trainSet_in = [];
          testSet_in = [];
          
@@ -56,25 +53,17 @@ for p = 1:Kout
          trainLabels_in = trainLabels_out(trainIdx_in);
          testIdx_in = cp_labels_in.test(i);
          testLabels_in = trainLabels_out(testIdx_in);
-         % rajouté
          train_in = train_out(trainIdx_in,:);
          test_in = train_out(testIdx_in,:);
         
-         % Rank of features for inner loop, on training set: v?rifier si on laisse fisher
-         % Ca plutot ?
+         % Rank of features for inner loop, on training set
          [orderedIndin, orderedPowerin] = rankfeat(train_in,trainLabels_in,'fisher');
-         %[orderedIndin, orderedPowerin] = rankfeat(features(trainIdx_in,:),labels(trainIdx_in),'fisher');
          
          % Test different models with this inner fold cv
           for j = 1:N
             trainSet_in = [trainSet_in, train_in(:,orderedIndin(j))]; 
             testSet_in = [testSet_in, test_in(:,orderedIndin(j))];
-            %features_model_in = [features_model_in, features(trainIdx_out,orderedIndin(j))]; 
 
-            % Construction of train and test set for inner loop
-            %trainSet_in = features_model_in(trainIdx_in,:);
-            %testSet_in = features_model_in(testIdx_in,:);
-       
             % Classifier construction
             DiagLinclassifier_in = fitcdiscr(trainSet_in,trainLabels_in,'discrimtype', 'diagLinear');
 
@@ -101,13 +90,8 @@ for p = 1:Kout
     for j = 1:nbfeature_minTesterror_in(p)
        trainSet_out = [trainSet_out, train_out(:,orderedIndout(j))];
        testSet_out = [testSet_out, test_out(:,orderedIndout(j))];
-        %features_model_out = [features_model_out, features(:,orderedIndout(j))];
     end
      
-    % Select the train and test data for the outer fold
-    %trainSet_out = features_model_out(trainIdx_out,:); 
-    %testSet_out = features_model_out(testIdx_out,:);
-       
     % Classifier construction
     DiagLinclassifier_out = fitcdiscr(trainSet_out,trainLabels_out,'discrimtype', 'diagLinear');
 

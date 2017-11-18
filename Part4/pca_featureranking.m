@@ -18,8 +18,8 @@ cp_labels_out = cvpartition (labels,'kfold',Kout);
 % Initialization
  errTest_out = zeros(1,Kout); 
  errTrain_out = zeros(1,Kout); 
- validationerr_in  = [];  % Attention, not (N_pca*N_pca,Kout)!!!! Car pas 60*60 mod?les
- errTrain_in = [];   % Attention, not (N_pca*N_pca,Kout)!!!! Car pas 60*60 mod?les
+ validationerr_in  = [];  
+ errTrain_in = [];  
  min_validationerror_in  = zeros(1,Kout); 
  min_trainingerror_in = zeros(1,Kout);
  bestModel_PCA  = zeros(1,Kout);
@@ -43,7 +43,7 @@ for p = 1:Kout
      % Normalization and PCA
     [train_out_n, mu_out, sigma_out] = zscore(train_out);
     [coeff_out, train_out_pca, variance_out] = pca(train_out_n); % score_out = train_out_pca
-    test_out_pca = ((test_out' - mu_out')./sigma_out')'* coeff_out; % A comparer avec d'autres groupes
+    test_out_pca = ((test_out' - mu_out')./sigma_out')'* coeff_out; 
     
     % Inner partition on the train set of our outer-fold
     cp_labels_in = cvpartition (trainLabels_out,'kfold',Kin);
@@ -67,7 +67,7 @@ for p = 1:Kout
         % PCA 
         [train_in_n, mu_in, sigma_in] = zscore(train_in);
         [coeff_in, train_in_pca, variance_in] = pca(train_in_n); % score_in = train_in_pca
-        test_in_pca = ((test_in' - mu_in')./sigma_in')'* coeff_in; % A comparer avec d'autres groupes
+        test_in_pca = ((test_in' - mu_in')./sigma_in')'* coeff_in; 
         
        for j = 1:N_pca
            % Initialization
@@ -129,7 +129,6 @@ for p = 1:Kout
     % Rank of PCs for outer loop, on training set
     [orderedIndout, orderedPowerout] = rankfeat(trainSet_out_pca,trainLabels_out,'fisher');
     
-    %Pb avec trainSet pas remis a 0 ? Donner autre nom ?
     for j = 1:bestModel_Rank(p)
        trainSet_out = [trainSet_out, trainSet_out_pca(:,orderedIndout(j))];
        testSet_out = [testSet_out, testSet_out_pca(:,orderedIndout(j))];

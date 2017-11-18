@@ -29,7 +29,6 @@ cp_labels_out = cvpartition (labels,'kfold',Kout);
  
 
 for p = 1:Kout
-    %features_model_out = [];
     trainSet_out = [];
     testSet_out = [];
     
@@ -39,13 +38,11 @@ for p = 1:Kout
     testIdx_out = cp_labels_out.test(p);
     trainLabels_out = labels(trainIdx_out);
     testLabels_out = labels(testIdx_out);
-    % Ajouté
     train_out = features(trainIdx_out,:);
     test_out = features(testIdx_out,:);
     
-    % Rank of features for outer loop, on training set: v?rifier si on laisse fisher
+    % Rank of features for outer loop, on training set
     [orderedIndout, orderedPowerout] = rankfeat(train_out,trainLabels_out,'fisher');
-    %[orderedIndout, orderedPowerout] = rankfeat(features(trainIdx_out,:),labels(trainIdx_out),'fisher');
     
     % Inner partition on the train set of our outer-fold
     cp_labels_in = cvpartition (trainLabels_out,'kfold',Kin);
@@ -60,13 +57,11 @@ for p = 1:Kout
          trainLabels_in = trainLabels_out(trainIdx_in);
          testIdx_in = cp_labels_in.test(i);
          testLabels_in = trainLabels_out(testIdx_in);
-         % Ajouté
          train_in = train_out(trainIdx_in,:);
          test_in = train_out(testIdx_in,:);
         
-         % Rank of features for inner loop, on training set: v?rifier si on laisse fisher
+         % Rank of features for inner loop, on training set
          [orderedIndin, orderedPowerin] = rankfeat(train_in,trainLabels_in,'fisher');
-         %[orderedIndin, orderedPowerin] = rankfeat(features(trainIdx_in,:),labels(trainIdx_in),'fisher');
           
          %number of models tried (60 features * 3 classifiers = 180)
     %model j: classifier 1 with 1 feature, classifier 1 with 2 features,
@@ -80,7 +75,6 @@ for p = 1:Kout
          for type = 1:3
              trainSet_in = [];
              testSet_in = [];
-            %features_model_in = [];
             c = char(classifierType(type));
          
             % Test different models with this inner fold cv (one model is one
@@ -89,14 +83,9 @@ for p = 1:Kout
                 nModel = nModel + 1;
                 trainSet_in = [trainSet_in, train_in(:,orderedIndin(nbF))]; 
                 testSet_in = [testSet_in, test_in(:,orderedIndin(nbF))]; 
-                %features_model_in = [features_model_in, features(trainIdx_out,orderedIndin(nbF))]; 
                 model(nModel).classifier = c;
                 model(nModel).number_of_features = nbF;
-                
-                % Construction of train and test set for inner loop
-%                 trainSet_in = features_model_in(trainIdx_in,:);
-%                 testSet_in = features_model_in(testIdx_in,:);
-%        
+
                 % Classifier construction
                 classifier_in = fitcdiscr(trainSet_in,trainLabels_in,'discrimtype', c);
 
@@ -150,13 +139,8 @@ for p = 1:Kout
     for j = 1:model(bestModel_in(p)).number_of_features
         trainSet_out = [trainSet_out, train_out(:,orderedIndout(j))];
         testSet_out = [testSet_out, test_out(:,orderedIndout(j))];
-       %features_model_out = [features_model_out, features(:,orderedIndout(j))];
     end
      
-    % Select the train and test data for the outer fold
-    %trainSet_out = features_model_out(trainIdx_out,:); 
-    %testSet_out = features_model_out(testIdx_out,:);
-       
     % Classifier construction
     classifier_out = fitcdiscr(trainSet_out,trainLabels_out,'discrimtype', bestModelClassifier);
 
@@ -174,24 +158,24 @@ end
 %Calculus of best model characteristics
 model(bestModel_in)
 
-% %boxplots of distributions
-% figure('Color','w');
-% l = zeros(15,1);
-% l(1:Kout) = 1;
-% l(Kout+1:2*Kout) = 2;
-% l(2*Kout+1:3*Kout) = 3;
-% subplot(3,1,1);
-% boxplot([optimal_trainingerror_diaglin; optimal_validationerror_diaglin; errTest_out], l, 'Labels',{'Optimal Training','Optimal Validation','Test'});
-% box off;
-% ylabel('Error');
-% title('Error Distributions for Diagonal Linear Classifier')
-% subplot(3,1,2);
-% boxplot([optimal_trainingerror_lin; optimal_validationerror_lin; errTest_out], l, 'Labels',{'Optimal Training','Optimal Validation','Test'});
-% box off;
-% ylabel('Error');
-% title('Error Distributions for Linear Classifier')
-% subplot(3,1,3);
-% boxplot([optimal_trainingerror_diagquadratic; optimal_validationerror_diagquadratic; errTest_out], l, 'Labels',{'Optimal Training','Optimal Validation','Test'});
-% box off;
-% ylabel('Error');
-% title('Error Distributionsfor Diagonal Quadratic Classifier')
+%boxplots of distributions
+figure('Color','w');
+l = zeros(15,1);
+l(1:Kout) = 1;
+l(Kout+1:2*Kout) = 2;
+l(2*Kout+1:3*Kout) = 3;
+subplot(3,1,1);
+boxplot([optimal_trainingerror_diaglin; optimal_validationerror_diaglin; errTest_out], l, 'Labels',{'Optimal Training','Optimal Validation','Test'});
+box off;
+ylabel('Error');
+title('Error Distributions for Diagonal Linear Classifier')
+subplot(3,1,2);
+boxplot([optimal_trainingerror_lin; optimal_validationerror_lin; errTest_out], l, 'Labels',{'Optimal Training','Optimal Validation','Test'});
+box off;
+ylabel('Error');
+title('Error Distributions for Linear Classifier')
+subplot(3,1,3);
+boxplot([optimal_trainingerror_diagquadratic; optimal_validationerror_diagquadratic; errTest_out], l, 'Labels',{'Optimal Training','Optimal Validation','Test'});
+box off;
+ylabel('Error');
+title('Error Distributionsfor Diagonal Quadratic Classifier')

@@ -78,10 +78,6 @@ hold off;
 
 %% k-fold cross-validation with Correlation of Pearson
 
-% Partition: K = 10
-% ATTENTION NE PAS REFAIRE CA ICI, SINON LES DEUX METHODES NE SONT PAS APPLIQUES AUX MEMES FOLDS
-%cp_labels = cvpartition (labels,'kfold',10);
-
 % Initialization of error vector
 N = 60;
 errClassDiagLinTest = zeros(N, cp_labels.NumTestSets);
@@ -151,10 +147,6 @@ hold off;
 
 %% Random classifier
 
-% k-fold partition of our data
-% ATTENTION NE PAS REFAIRE CA ICI, SINON LES DEUX METHODES NE SONT PAS APPLIQUES AUX MEMES FOLDS
-%cp_labels = cvpartition (labels,'kfold',10);
-
 % Initialization 
 R = 1000; % Number of repetitions
 N = 60; % Number of features max
@@ -178,7 +170,7 @@ for x = 1:R
          train = features(trainIdx,:);
          test = features(testIdx,:);
         
-         % Rank of features on training set: v?rifier si on laisse fisher
+         % Rank of features on training set
          [orderedInd, orderedPower] = rankfeat(train,trainLabels,'fisher');
         
         for j = 1:N
@@ -191,10 +183,6 @@ for x = 1:R
              % Attribute our random label to test and train set
              RandomlabelTest = Randomlabel(testIdx);
              RandomlabelTrain = Randomlabel(trainIdx);
-        
-             % Create our train and test set of inner loop for this model
-%              trainSet = features_model(trainIdx,:);
-%              testSet = features_model(testIdx,:);
         
              % Calculus of class error on test set -> testing error (NxK)
              errClassRandomTest(j,i) = classerror(testLabels, RandomlabelTest);
